@@ -1,0 +1,20 @@
+from random import Random
+
+def make_str_number(rng: Random, length):
+    from test_interpreter import make_integer, DOTS, make_digits
+
+    use_fraction = rng.choice([True, False])
+
+    if not use_fraction or length <= 1:
+        return make_integer(rng, length)
+
+    dot = rng.choice(DOTS)
+
+    digits_count = length - 1
+    integer_length = rng.randint(1, digits_count - 1)
+    fraction_length = digits_count - integer_length
+
+    integer = make_integer(rng, integer_length)
+    fraction = make_digits(rng, fraction_length)
+
+    return integer + dot + fraction
