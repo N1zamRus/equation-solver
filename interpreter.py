@@ -17,13 +17,8 @@ number          = [sign], (integer, [frac] | frac), [exponent]
 """
 
 from abc import ABC, abstractmethod
+from BigFloat import create_BigFloat
 
-
-
-class Error:
-    def __init__():
-        pass
-    
 
 class Text:
     def __init__(self, text):
@@ -162,6 +157,23 @@ class Number(Node):
 
         return True
 
+class ThreeBigFloats:
+    def interpret(self, text: str):
+        numbers = text.split()
+
+        if len(numbers) != 3:
+            ShowErrorMassege("Числа должно быть ровно 3")
+            return None
+
+        for number in numbers:
+            if not is_number(number):
+                ShowErrorMassege(f"Некорректное число: {number}")
+                return None
+
+        return (create_BigFloat(numbers[0]),
+                create_BigFloat(numbers[1]),
+                create_BigFloat(numbers[2]),)
+
 def is_digit(now_char: str)-> bool:
     if now_char is not None and now_char in ("1234567890"):
         return True
@@ -197,20 +209,3 @@ def ShowErrorMassege(mess):
 
 def is_number(text: str) -> bool:
     return Number().interpret(Text(text))
-
-def is_three_numbers(text: str) -> bool:
-    numbers = text.split()
-
-    if len(numbers) != 3:
-        ShowErrorMassege("Числа должно быть ровно 3")
-        return False
-
-    for number in numbers:
-        if not is_number(number):
-            ShowErrorMassege(f"Некорректное число: {number}")
-            return False
-
-    return True
-
-if __name__ == "__main__":
-    is_three_numbers()
