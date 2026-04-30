@@ -61,11 +61,12 @@ def get_mantiss(cls: BigFloat):
     if not cls.blocks:
         return "0"
 
-    output_line = str(cls.blocks[-1])
-    for i in range(len(cls.blocks) - 2, -1, -1):
-        output_line += str(cls.blocks[i]).zfill(get_BASE_DIGITS())
+    parts = [str(cls.blocks[-1])]
 
-    return output_line
+    for i in range(len(cls.blocks) - 2, -1, -1):
+        parts.append(str(cls.blocks[i]).zfill(get_BASE_DIGITS()))
+
+    return "".join(parts)
 
 def create_BigFloat(num: str):
     sign = 1

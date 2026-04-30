@@ -150,7 +150,7 @@ def FFT(A: list[int], invert=False) -> list[complex]:
         else:
             angle = -2 * pi / length
 
-        w_len = complex(cos(angle), sin(angle))
+        w_len = complex(cos(angle), sin(angle)) # комплексноый поворот по формуле эйлера
 
         for start in range(0, n, length):
             w = 1
@@ -158,10 +158,10 @@ def FFT(A: list[int], invert=False) -> list[complex]:
             for j in range(0, length // 2):
 
                 u = A[start + j]
-                v = A[start + j + length // 2] * w
+                v = A[start + j + length // 2] 
 
-                A[start + j] = u + v
-                A[start + j + length // 2] = u - v
+                A[start + j] = u + v * w
+                A[start + j + length // 2] = u - v * w
 
                 w = w * w_len
 
