@@ -5,6 +5,7 @@ from BigFloat import create_BigFloat, get_exp10, get_mantiss, get_sign
 from Subtraction import Sub
 from test_utility import make_str_number
 from time import perf_counter
+from test_utility import to_decimal, bigfloat_decimal
 
 import pytest
 
@@ -18,19 +19,6 @@ RANDOM_SEED = 321541
 getcontext().prec = RANDOM_NUMBER_LENGTH * 2 + 10
 getcontext().Emax = MAX_EMAX
 getcontext().Emin = MIN_EMIN
-
-
-def to_decimal(value):
-    return Decimal(str(value).replace(",", "."))
-
-
-def bigfloat_decimal(value):
-    sign = 1 if get_sign(value) < 0 else 0
-    digits = tuple(int(digit) for digit in get_mantiss(value))
-    exponent = get_exp10(value)
-
-    return Decimal((sign, digits, exponent))
-
 
 def make_random_pairs():
     rng = Random(RANDOM_SEED)

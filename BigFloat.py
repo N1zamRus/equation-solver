@@ -158,6 +158,27 @@ def normalize(num: BigFloat):
 
     return BigFloat(sign, blocks, exp10)
 
+def make_carry(coeffs: list[int]):
+    BASE = get_BASE()
+
+    carry = 0
+    blocks = []
+
+    for x in coeffs:
+        x = int(x) + carry
+
+        blocks.append(x % BASE)
+        carry = x // BASE
+
+    while carry > 0:
+        blocks.append(carry % BASE)
+        carry //= BASE
+
+    while len(blocks) > 1 and blocks[-1] == 0:
+        blocks.pop()
+
+    return blocks
+
 
 def compare(self: BigFloat, other: BigFloat):
     a = normalize(self)

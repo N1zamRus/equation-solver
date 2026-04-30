@@ -1,4 +1,6 @@
 from random import Random
+from decimal import Decimal
+from BigFloat import get_exp10, get_mantiss, get_sign
 
 def make_str_number(rng: Random, length):
     from test_interpreter import make_integer, DOTS, make_digits
@@ -18,3 +20,13 @@ def make_str_number(rng: Random, length):
     fraction = make_digits(rng, fraction_length)
 
     return integer + dot + fraction
+
+def to_decimal(value):
+    return Decimal(str(value).replace(",", "."))
+
+def bigfloat_decimal(value):
+    sign = 1 if get_sign(value) < 0 else 0
+    digits = tuple(int(digit) for digit in get_mantiss(value))
+    exponent = get_exp10(value)
+
+    return Decimal((sign, digits, exponent))
