@@ -145,7 +145,7 @@ class Number(Node):
 
         else:
             text.pos = start_pos
-            ShowErrorMassege(f"Не обработался Number: {text.text}, '{text.current_char()}'")
+            ShowErrorMassege(f"Не обработался токен: {text.text}, '{text.current_char()}'")
             return False
 
         Exponent().interpret(text)

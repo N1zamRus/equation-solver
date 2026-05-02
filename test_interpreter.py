@@ -5,7 +5,7 @@ import pytest
 from interpreter import is_number
 
 
-RANDOM_TESTS_COUNT = 10
+RANDOM_TESTS_COUNT = 500
 RANDOM_SEED = 1234236541231341
 NUMBER_LENGTH = 10
 
@@ -67,7 +67,7 @@ def make_random_number(rng: Random, length=NUMBER_LENGTH):
         "signed_integer",
         "fraction_with_integer",
         "fraction_without_integer",
-        "exponent",
+        "signed_integer_exponent",
         "fraction_with_exponent",
     ])
 
@@ -99,7 +99,7 @@ def make_random_number(rng: Random, length=NUMBER_LENGTH):
 
         return sign + dot + fraction
 
-    if number_type == "exponent":
+    if number_type == "signed_integer_exponent":
         sign = rng.choice(["", "+", "-"])
         body_length = length - len(sign)
 

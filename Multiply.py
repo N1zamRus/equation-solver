@@ -11,7 +11,9 @@ from BigFloat import (
     make_carry,
     normalize,
     get_sign,
-    create_BigFloat
+    create_BigFloat,
+    bigfloat_string,
+    BigFloat_round
 )
 from decimal import getcontext, MAX_EMAX, MIN_EMIN
 
@@ -33,7 +35,7 @@ def make_complex_elements(A: list[int]):
         A[i] = complex(A[i], 0)
     return A
 
-def Mul(a: BigFloat, b: BigFloat):
+def Mul(a: BigFloat, b: BigFloat, precision = 2026):
     global N
     
     result_sign = get_sign(a) * get_sign(b)
@@ -51,8 +53,8 @@ def Mul(a: BigFloat, b: BigFloat):
     a_blocks = make_complex_elements(a_blocks)
     b_blocks = make_complex_elements(b_blocks)
 
-    a_revers = Reverse_Bits(a_blocks)
-    b_revers = Reverse_Bits(b_blocks)
+    a_revers = reverse_bits(a_blocks)
+    b_revers = reverse_bits(b_blocks)
 
     a_fft = FFT(a_revers)
     b_fft = FFT(b_revers)
@@ -62,16 +64,19 @@ def Mul(a: BigFloat, b: BigFloat):
     for i in range(N):
         c_blocks[i] = a_fft[i] * b_fft[i]
 
-    c_blocks = FFT(Reverse_Bits(c_blocks), True)
+    c_blocks = FFT(reverse_bits(c_blocks), True)
 
     coeffs = []
 
     for i in range(N):
         coeffs.append(round(c_blocks[i].real))
 
-    coeffs = make_carry(coeffs)
+    res_BF = normalize(BigFloat(result_sign, make_carry(coeffs), result_exp10))
 
-    return normalize(BigFloat(result_sign, coeffs, result_exp10))
+    if precision != 0:
+        res_BF = BigFloat_round(res_BF, precision)
+
+    return res_BF
 
 """
 1. Есть 2 чаисла bigfloat
@@ -106,9 +111,10 @@ def Mul(a: BigFloat, b: BigFloat):
 """
 
     
-def Reverse_Bits(A: list[int]):
+def reverse_bits(A: list[int]):
     n = len(A)
     bits_count = (n - 1).bit_length()
+    
 
     for i in range(n):
         j = reverse_bits_index(i, bits_count)
@@ -118,8 +124,9 @@ def Reverse_Bits(A: list[int]):
 
     return A
 
+
 def reverse_bits_index(i: int, bits_count: int) -> int:
-    binary = bin(i)[2:].zfill(bits_count)
+    binary = bin(i)[2:].zfill(bits_count) 
     reversed_binary = binary[::-1]
     return int(reversed_binary, 2)
 
@@ -218,14 +225,30 @@ def FFT(A, invert=False)
                 A[i] = A[i] / n
 """
 
-if __name__ == "__main__":
-    a = create_BigFloat(make_str_number(Random(2143), 10000))
-    b = create_BigFloat(make_str_number(Random(423), 10000))
 
-    start = perf_counter()
-    res = Mul(a, b)
-    end = perf_counter()
-    time = end - start
 
-    expected = to_decimal(a) * to_decimal(b)
-    print(f"{res}\n {time:.8f}\n {bigfloat_decimal(res) == expected}")
+if __name__ == '__main__':
+    from decimal import getcontext, Decimal
+    from time import perf_counter
+    from test_utility import make_str_number
+    from random import Random
+
+    getcontext().prec = 50000
+    rng_a = Random(123)
+    rng_b = Random(511235423)
+
+    for _ in range(10):
+        a = create_BigFloat(make_str_number(rng_a, 10000))
+        b = create_BigFloat(make_str_number(rng_b, 10000))
+
+        expected = Decimal(bigfloat_string(a)) * Decimal(bigfloat_string(b))
+        expected = f'{expected:.10030f}'
+
+        t1 = perf_counter()
+        result = Mul(a, b)
+        t2 = perf_counter()
+
+        result_str = bigfloat_string(result)
+
+        print("OK:", result_str[:10000] == expected[:10000])
+        print("TIME:", t2 - t1)

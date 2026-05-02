@@ -1,9 +1,8 @@
 from decimal import Decimal, getcontext, MAX_EMAX, MIN_EMIN
 from Multiply import Mul
-from BigFloat import create_BigFloat
-from test_utility import make_random_pairs
+from BigFloat import create_BigFloat, bigfloat_string
 from time import perf_counter
-from test_utility import to_decimal, bigfloat_decimal
+from test_utility import to_decimal, bigfloat_decimal, make_random_pairs
 from random import Random
 
 import pytest
@@ -21,7 +20,7 @@ getcontext().Emin = MIN_EMIN
 @pytest.mark.parametrize("left, right", make_random_pairs(Random(RANDOM_SEED), 
                                                           RANDOM_PAIRS_COUNT, 
                                                           RANDOM_NUMBER_LENGTH))
-def test_random_multiply_with_decimal(left, right):
+def test_multiply(left, right):
     left_bigfloat = create_BigFloat(left)
     right_bigfloat = create_BigFloat(right)
 
@@ -33,10 +32,10 @@ def test_random_multiply_with_decimal(left, right):
 
     expected = to_decimal(left) * to_decimal(right)
 
-    assert bigfloat_decimal(actual) == expected
+    assert bigfloat_string(actual)[:10000] == str(expected)[:10000]
 
 @pytest.fixture(scope="module", autouse=True)
-def print_average_operation_time():
+def print_average_time():
     yield
 
     if MUL_TIMES:

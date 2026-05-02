@@ -135,7 +135,7 @@ def bigfloat_string(num: BigFloat):
 
 def normalize(num: BigFloat):
     sign = num.sign
-    blocks = num.blocks.copy()
+    blocks = num.blocks
     exp10 = num.exp10
 
     while blocks and blocks[-1] == 0:
@@ -267,3 +267,16 @@ def del_zeros(blocks: list[int]):
         blocks.pop()
 
     return blocks
+
+def BigFloat_round(num: BigFloat, precision: int):
+    blocks = get_blocks(num)
+    exp = get_exp10(num)
+    old_len = len(blocks)
+
+    if old_len < precision:
+        return num
+    
+    blocks = blocks[-precision:]
+    exp = exp + (old_len - len(blocks)) * get_BASE_DIGITS()
+
+    return BigFloat(get_sign(num), blocks, exp)

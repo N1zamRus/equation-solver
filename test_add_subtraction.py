@@ -55,6 +55,8 @@ def test_random_sub_with_decimal(left, right):
 
     assert bigfloat_decimal(actual) == expected
 
+    """узкие случаи"""
+
 @pytest.fixture(scope="module", autouse=True)
 def print_average_operation_time():
     yield
