@@ -44,24 +44,17 @@ def make_x0(b: BigFloat):
     return normalize(BigFloat(1, slice_blocks(str(int_x0)), res_exp))
 """
 def make_x0(b)
-    1. Возьмём модуль из числа b и нормализуем на всякий
-    2. Втащим из b его блоки
-    3. Возьмём 4 блока для начала, ну либо весь массив если он меньше 4
-    4. Сделаем из старших блоков мантиссу 
-        От n-1 до n-1-сколько взяли
-            top = top * base(100000) + элемент
-    5. А теперь посмотрим сколько цифр мы ожидаем увидеть
-        сколько взяли блоков * сколько в блоке цифр + запаска
-       А числа которые мы отрубили мы представим в виде exp
-        кол-во отрубленых блоков * кол-во цифр в блоке + изначальная экспонента
-    6. Найдём мантиссу x0, для этого
-        10**ожидаемое кол-во цифр + запас // top
-        Если мы не маштабируем это и оставим 1, то мы будем всегда получать 0
-    7. Найдём экспоненту для результата
-        экспонентой будет вычитание нашего маштаба - остальные числа которые мы не учитывали
-    8. Возвращаем x0 в виде BigFloat
+    1. Берём модуль b и нормализуем
+    2. Достаём блоки числа
+    3. Берём до 4 старших блоков, а остальные считаем отброшенными
+    4. Из старших блоков собираем число top
+    5. Считаем желаемое количество цифр в x0 с небольшой запаской
+    6. Увеличиваем ещё масштаб потому что top сам содержит много цифр
+    7. Считаем мантиссу начального приближения 10^масштаб / top
+    8. В экспоненте возвращаем масштаб обратно и учитываем отброшенные блоки
+    9. Возвращаем модуль BigFloat
 """
-def Inv(b: BigFloat, iteration=11, precision=2026, guard_blocks=20):
+def Inv(b: BigFloat, iteration=11, precision=2026, extra_blocks=10):
     result_sign = get_sign(b)
     b_abs = abs(normalize(b))
 
@@ -69,15 +62,16 @@ def Inv(b: BigFloat, iteration=11, precision=2026, guard_blocks=20):
     TWO = BigFloat(1, [2], 0)
 
     current_blocks = 2
-    max_work_precision = precision + guard_blocks
+    max_work_precision = precision + extra_blocks
 
     for _ in range(iteration):
         if len(get_blocks(x)) >= precision:
             break
 
         current_blocks *= 2
-        work_precision = min(current_blocks + guard_blocks, max_work_precision)
+        work_precision = min(current_blocks + extra_blocks, max_work_precision)
 
+        # xₙ₊₁ = xₙ · (2 - b · xₙ)
         bx = Mul(BigFloat_round(b_abs, current_blocks + 10), x, work_precision)
         right = Sub(TWO, bx)
         x = Mul(x, right, work_precision)
@@ -92,12 +86,13 @@ def Inv(b: BigFloat, iteration=11, precision=2026, guard_blocks=20):
 def Inv(b, кол-во итераций)
     1. Найдём начальное приближение с помощью make_x0
     2. Начальная точность у нас будет 2 блока
-    3. Цикл, который идёт n итераций, по умолчанию 11
-        увеличим маштаб в 2 раза
-
-        по формуле x = x * (2 - b * x) находим xЮ добавляя к b новые блоки
-
-    4. Возвращаем последний x, это и есть наше обратное число
+        А максимальная рабочая будет желаемая + запаска
+    3. Цикл будет идти пока не кончатся итерации
+        Уввеличиваем current_blocks и выставляем рабочую область current_blocks + запаска
+        Находим x по формуле
+    4. Обрезаем x чтобы ошибки не шли в учёт результата
+    5. Определяем знак
+    6. Нормализуем и возвращаем в виде BigFloat
 """
 
 
@@ -108,10 +103,13 @@ if __name__ == '__main__':
     from random import Random
 
     getcontext().prec = 50000
+    
+    rng_a = Random(123)
+    rng_b = Random(511235423)
 
     for _ in range(10):
-        a = create_BigFloat(make_str_number(Random(21342143), 10000))
-        b = create_BigFloat(make_str_number(Random(515423), 10000))
+        a = create_BigFloat(make_str_number(rng_a, 10000))
+        b = create_BigFloat(make_str_number(rng_b, 10000))  
 
         expected = Decimal(bigfloat_string(a)) / Decimal(bigfloat_string(b))
         expected = f'{expected:.10030f}'
