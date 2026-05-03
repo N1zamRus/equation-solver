@@ -11,7 +11,7 @@ def make_str_number(rng: Random, length):
 
     use_fraction = rng.choice([True, False])
 
-    if not use_fraction or length <= 1:
+    if not use_fraction or length <= 2:
         return make_integer(rng, length)
 
     dot = rng.choice(DOTS)

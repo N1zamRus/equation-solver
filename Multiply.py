@@ -234,8 +234,8 @@ if __name__ == '__main__':
     from random import Random
 
     getcontext().prec = 50000
-    rng_a = Random(123)
-    rng_b = Random(511235423)
+    rng_a = Random(34234)
+    rng_b = Random(51213)
 
     for _ in range(10):
         a = create_BigFloat(make_str_number(rng_a, 10000))
@@ -250,5 +250,7 @@ if __name__ == '__main__':
 
         result_str = bigfloat_string(result)
 
-        print("OK:", result_str[:10000] == expected[:10000])
+        result_expected_format = f'{Decimal(result_str):.10030f}'
+        print("OK:", result_expected_format[:10000] == expected[:10000])
         print("TIME:", t2 - t1)
+

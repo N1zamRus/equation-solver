@@ -9,9 +9,9 @@ import pytest
 
 MUL_TIMES = []
 
-RANDOM_PAIRS_COUNT = 100
+RANDOM_PAIRS_COUNT = 1000
 RANDOM_NUMBER_LENGTH = 10000
-RANDOM_SEED = 235434
+RANDOM_SEED = 512352
 
 getcontext().prec = RANDOM_NUMBER_LENGTH * 2 + 10
 getcontext().Emax = MAX_EMAX
@@ -41,3 +41,5 @@ def print_average_time():
     if MUL_TIMES:
         avg_mul = sum(MUL_TIMES) / len(MUL_TIMES)
         print(f"\nСреднее время Mul: {avg_mul:.8f} сек")
+
+# pytest -s test_multiply.py 2>&1 | tee results_mul.txt

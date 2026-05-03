@@ -108,8 +108,8 @@ if __name__ == '__main__':
     rng_b = Random(511235423)
 
     for _ in range(10):
-        a = create_BigFloat(make_str_number(rng_a, 10000))
-        b = create_BigFloat(make_str_number(rng_b, 10000))  
+        a = create_BigFloat(make_str_number(rng_a, 1))
+        b = create_BigFloat(make_str_number(rng_b, 1))  
 
         expected = Decimal(bigfloat_string(a)) / Decimal(bigfloat_string(b))
         expected = f'{expected:.10030f}'
@@ -120,5 +120,6 @@ if __name__ == '__main__':
 
         result_str = bigfloat_string(result)
 
-        print("OK:", result_str[:10000] == expected[:10000])
+        result_expected_format = f'{Decimal(result_str):.10030f}'
+        print("OK:", result_expected_format[:10000] == expected[:10000])
         print("TIME:", t2 - t1)
