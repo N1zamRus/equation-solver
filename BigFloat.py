@@ -7,6 +7,15 @@ class BigFloat():
         self.blocks = blocks
         self.exp10 = exp10
 
+    def set_sign(self, sign):
+        self.sign = sign
+
+    def set_exp(self, exp):
+        self.exp = exp
+
+    def set_mantissa(self, mantissa):
+        self.mantissa = mantissa[:]
+
     def __repr__(self):
         return bigfloat_string(self)
     

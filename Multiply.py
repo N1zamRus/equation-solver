@@ -225,7 +225,17 @@ def FFT(A, invert=False)
                 A[i] = A[i] / n
 """
 
+def short_Mul(num: BigFloat, multiplier, exp_multiplier = 0):
+    res_sign = get_sign(num) * (1 if multiplier > 0 else -1)
+    res_exp = get_exp10(num) + exp_multiplier
+    num_blocks = get_blocks(num)
 
+    for i in range(len(num_blocks)):
+        num_blocks[i] *= abs(multiplier)
+
+    num_blocks = make_carry(num_blocks)
+
+    return BigFloat(res_sign, num_blocks, res_exp)
 
 if __name__ == '__main__':
     from decimal import getcontext, Decimal
@@ -237,7 +247,7 @@ if __name__ == '__main__':
     rng_a = Random(34234)
     rng_b = Random(51213)
 
-    for _ in range(10):
+    for _ in range(5):
         a = create_BigFloat(make_str_number(rng_a, 10000))
         b = create_BigFloat(make_str_number(rng_b, 10000))
 

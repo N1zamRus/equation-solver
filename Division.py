@@ -32,7 +32,7 @@ def make_x0(b: BigFloat):
     BASE_DIGITS = get_BASE_DIGITS()
 
     top = 0
-    for i in range(len(b_blocks) - 1, len(b_blocks) - 1 - take, -1):
+    for i in range(len(b_blocks) - 1, dropped - 1, -1):
         top = top * BASE + b_blocks[i]
 
     x0_digits = take * BASE_DIGITS + 2
@@ -54,7 +54,7 @@ def make_x0(b)
     8. В экспоненте возвращаем масштаб обратно и учитываем отброшенные блоки
     9. Возвращаем модуль BigFloat
 """
-def Inv(b: BigFloat, iteration=11, precision=2026, extra_blocks=10):
+def Inv(b: BigFloat, iteration=10, precision=2005, extra_blocks=5):
     result_sign = get_sign(b)
     b_abs = abs(normalize(b))
 
@@ -107,9 +107,9 @@ if __name__ == '__main__':
     rng_a = Random(123)
     rng_b = Random(511235423)
 
-    for _ in range(10):
-        a = create_BigFloat(make_str_number(rng_a, 1))
-        b = create_BigFloat(make_str_number(rng_b, 1))  
+    for _ in range(5):
+        a = create_BigFloat(make_str_number(rng_a, 10000))
+        b = create_BigFloat(make_str_number(rng_b, 10000))  
 
         expected = Decimal(bigfloat_string(a)) / Decimal(bigfloat_string(b))
         expected = f'{expected:.10030f}'
