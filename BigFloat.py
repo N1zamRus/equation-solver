@@ -142,10 +142,28 @@ def bigfloat_string(num: BigFloat):
         return num_sign + "0." + "0" * (-dot_pos) + output_line
     
 
+def _div_blocks_by_10(blocks: list[int]):
+    BASE = get_BASE()
+    carry = 0
+
+    # Делим всё большое число на 10.
+    # Идём от старших блоков к младшим.
+    for i in range(len(blocks) - 1, -1, -1):
+        cur = carry * BASE + blocks[i]
+        blocks[i] = cur // 10
+        carry = cur % 10
+
+    # Убираем старшие нулевые блоки
+    while len(blocks) > 1 and blocks[-1] == 0:
+        blocks.pop()
+
+
 def normalize(num: BigFloat):
     sign = num.sign
-    blocks = num.blocks
     exp10 = num.exp10
+    blocks = num.blocks.copy()
+
+    BASE_DIGITS = get_BASE_DIGITS()
 
     while blocks and blocks[-1] == 0:
         blocks.pop()
@@ -153,18 +171,26 @@ def normalize(num: BigFloat):
     if not blocks:
         return BigFloat(1, [0], 0)
 
-    mantissa = get_mantiss(BigFloat(sign, blocks, exp10))
+    if exp10 < 0:
+        drop = 0
+        max_drop = min((-exp10) // BASE_DIGITS, len(blocks) - 1)
 
-    while exp10 < 0 and mantissa and mantissa[-1] == "0":
-        mantissa = mantissa[:-1]
-        exp10 += 1
+        while drop < max_drop and blocks[drop] == 0:
+            drop += 1
 
-    mantissa = mantissa.lstrip("0") or "0"
+        if drop:
+            blocks = blocks[drop:]
+            exp10 += drop * BASE_DIGITS
 
-    if mantissa == "0":
+        while exp10 < 0 and blocks[0] % 10 == 0:
+            _div_blocks_by_10(blocks)
+            exp10 += 1
+
+    while blocks and blocks[-1] == 0:
+        blocks.pop()
+
+    if not blocks:
         return BigFloat(1, [0], 0)
-
-    blocks = slice_blocks(mantissa)
 
     return BigFloat(sign, blocks, exp10)
 

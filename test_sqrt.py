@@ -11,8 +11,8 @@ from test_utility import make_str_number
 
 SQRT_TIMES = []
 
-RANDOM_VALUES_COUNT = 10
-RANDOM_NUMBER_LENGTH = 10
+RANDOM_VALUES_COUNT = 100
+RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 23421
 
 getcontext().prec = 50000
@@ -26,7 +26,6 @@ def make_random_positive_numbers(rng: Random, count_test=RANDOM_VALUES_COUNT, le
     for _ in range(count_test):
         value = make_str_number(rng, length)
 
-        # На всякий случай убираем ноль, потому что корень из 0 тестируем отдельно.
         if Decimal(value.replace(',', '.')) == 0:
             value = '1'
 

@@ -15,7 +15,7 @@ from BigFloat import (
 from Add import Add
 from Subtraction import Sub
 from Division import Div
-from Multiply import Mul, short_Mul
+from Multiply import Mul, short_Mul, Pow_TWO
 
 from math import floor
 
@@ -25,7 +25,7 @@ BASE_DIGITS = get_BASE_DIGITS()
 BASE = get_BASE()
 
 
-def make_x0(a, extra_blocks = 9):
+def make_x0(a, extra_blocks = 10):
     a = abs(normalize(a))
     a_blocks = get_blocks(a)
 
@@ -86,8 +86,8 @@ def make_x0(a, запаска = 2)
     10. Соберём наше число bigfloat(1, slice_blocks(str(res_mantiss)), res_exp)
 """        
 
-def Sqrt(a: BigFloat, precision = 2026, extra_blocks = 2, iteration = 10):
-    x_old = make_x0(a, 4)
+def Sqrt(a: BigFloat, precision = 2050, extra_blocks = 20, iteration = 10):
+    x_old = make_x0(a, 10)
     current_blocks = 2
     THREE = BigFloat(1, [3], 0)
     max_work_precision = precision + extra_blocks
@@ -97,7 +97,7 @@ def Sqrt(a: BigFloat, precision = 2026, extra_blocks = 2, iteration = 10):
 
         a_work = BigFloat_round(a, work_precision)
 
-        qx = Mul(x_old, x_old, work_precision)
+        qx = Pow_TWO(x_old, work_precision)
         ax2 = Mul(a_work, qx, work_precision)
 
         staple = Sub(THREE, ax2)
@@ -111,7 +111,8 @@ def Sqrt(a: BigFloat, precision = 2026, extra_blocks = 2, iteration = 10):
         if current_blocks >= precision:
             break
 
-    result = Mul(a, x_old, precision)
+    result = Mul(a, x_old, precision + extra_blocks)
+    result = BigFloat_round(result, precision)
     return normalize(result)
 
 

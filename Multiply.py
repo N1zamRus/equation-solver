@@ -225,10 +225,10 @@ def FFT(A, invert=False)
                 A[i] = A[i] / n
 """
 
-def short_Mul(num: BigFloat, multiplier, exp_multiplier = 0):
+def short_Mul(num: BigFloat, multiplier, exp_multiplier=0):
     res_sign = get_sign(num) * (1 if multiplier > 0 else -1)
     res_exp = get_exp10(num) + exp_multiplier
-    num_blocks = get_blocks(num)
+    num_blocks = get_blocks(num).copy()
 
     for i in range(len(num_blocks)):
         num_blocks[i] *= abs(multiplier)
@@ -236,6 +236,40 @@ def short_Mul(num: BigFloat, multiplier, exp_multiplier = 0):
     num_blocks = make_carry(num_blocks)
 
     return BigFloat(res_sign, num_blocks, res_exp)
+
+def Pow_TWO(a: BigFloat, precision=2026):
+    global N
+
+    result_sign = 1
+    result_exp10 = get_exp10(a) * 2
+
+    a_blocks = get_blocks(a).copy()
+
+    result_len = 2 * len(a_blocks) - 1
+    N = next_power_two(result_len)
+
+    a_blocks += [0] * (N - len(a_blocks))
+    a_blocks = make_complex_elements(a_blocks)
+    a_revers = reverse_bits(a_blocks)
+    a_fft = FFT(a_revers)
+
+    c_blocks = [0] * N
+    for i in range(N):
+        c_blocks[i] = a_fft[i] * a_fft[i]
+
+    c_blocks = FFT(reverse_bits(c_blocks), True)
+
+    coeffs = []
+
+    for i in range(N):
+        coeffs.append(round(c_blocks[i].real))
+
+    res_BF = normalize(BigFloat(result_sign, make_carry(coeffs), result_exp10))
+
+    if precision != 0:
+        res_BF = BigFloat_round(res_BF, precision)
+
+    return res_BF
 
 if __name__ == '__main__':
     from decimal import getcontext, Decimal
