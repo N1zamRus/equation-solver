@@ -2,7 +2,7 @@ from decimal import Decimal, getcontext, MAX_EMAX, MIN_EMIN
 from Division import Div
 from BigFloat import create_BigFloat, bigfloat_string
 from time import perf_counter
-from test_utility import make_random_pairs
+from test_utility import make_signed_random_pairs, to_decimal
 from random import Random
 
 import pytest
@@ -10,7 +10,7 @@ import pytest
 
 DIV_TIMES = []
 
-RANDOM_PAIRS_COUNT = 10
+RANDOM_PAIRS_COUNT = 100
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 235434
 
@@ -19,7 +19,7 @@ getcontext().Emax = MAX_EMAX
 getcontext().Emin = MIN_EMIN
 
 
-@pytest.mark.parametrize("left, right",make_random_pairs(Random(RANDOM_SEED), RANDOM_PAIRS_COUNT, RANDOM_NUMBER_LENGTH))
+@pytest.mark.parametrize("left, right",make_signed_random_pairs(Random(RANDOM_SEED), RANDOM_PAIRS_COUNT, RANDOM_NUMBER_LENGTH))
 def test_division(left, right):
     left_bigfloat = create_BigFloat(left)
     right_bigfloat = create_BigFloat(right)
@@ -30,12 +30,11 @@ def test_division(left, right):
 
     DIV_TIMES.append(end - start)
 
-    expected = Decimal(bigfloat_string(left_bigfloat)) / Decimal(bigfloat_string(right_bigfloat))
-    expected = f"{expected:.10010f}"
+    expected = to_decimal(left) / to_decimal(right)
+    actual_str = f"{Decimal(bigfloat_string(actual)):.10010f}"
+    expected_str = f"{expected:.10010f}"
 
-    actual_str = bigfloat_string(actual)
-
-    assert actual_str[:10000] == expected[:10000]
+    assert actual_str[:10000] == expected_str[:10000]
 
 
 @pytest.fixture(scope="module", autouse=True)

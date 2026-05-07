@@ -35,10 +35,10 @@ def make_x0(b: BigFloat):
     for i in range(len(b_blocks) - 1, dropped - 1, -1):
         top = top * BASE + b_blocks[i]
 
-    x0_digits = take * BASE_DIGITS + 2
-    div_digits = x0_digits + len(str(top)) - 1
+    x0_digits = take * BASE_DIGITS + 20
+    div_digits = x0_digits - 1
 
-    int_x0 = 10 ** div_digits // top
+    int_x0 = 10 ** div_digits // top 
     res_exp = -div_digits - dropped * BASE_DIGITS - get_exp10(b)
 
     return normalize(BigFloat(1, slice_blocks(str(int_x0)), res_exp))
@@ -76,7 +76,6 @@ def Inv(b: BigFloat, iteration=10, precision=2005, extra_blocks=5):
         right = Sub(TWO, bx)
         x = Mul(x, right, work_precision)
 
-    x = BigFloat_round(normalize(x), precision)
 
     if result_sign < 0:
         x = -x

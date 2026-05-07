@@ -15,7 +15,7 @@ from BigFloat import (
 from Add import Add
 from Subtraction import Sub
 from Division import Div
-from Multiply import Mul, short_Mul, Pow_TWO
+from Multiply import Mul, short_Mul
 
 from math import floor
 
@@ -97,7 +97,7 @@ def Sqrt(a: BigFloat, precision = 2050, extra_blocks = 20, iteration = 10):
 
         a_work = BigFloat_round(a, work_precision)
 
-        qx = Pow_TWO(x_old, work_precision)
+        qx = Mul(x_old, x_old, work_precision)
         ax2 = Mul(a_work, qx, work_precision)
 
         staple = Sub(THREE, ax2)

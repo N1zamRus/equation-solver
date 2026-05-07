@@ -22,6 +22,8 @@ getcontext().Emax = MAX_EMAX
 getcontext().Emin = MIN_EMIN
 
 
+ROOTS_CACHE = {}
+
 N = 0
 
 def next_power_two(need):
@@ -30,10 +32,17 @@ def next_power_two(need):
         n *= 2
     return n
 
-def make_complex_elements(A: list[int]):
-    for i in range(len(A)):
-        A[i] = complex(A[i], 0)
-    return A
+def get_cache_roots(n):
+    if n not in ROOTS_CACHE:
+        w_forward = []
+        w_reverse = []
+        for k in range(n // 2):
+            angle = 2 * pi * k / n
+            w = complex(cos(angle), sin(angle))
+            w_forward.append(w)
+            w_reverse.append(w.conjugate())
+        ROOTS_CACHE[n] = (w_forward, w_reverse)
+    return ROOTS_CACHE[n]
 
 def Mul(a: BigFloat, b: BigFloat, precision = 2026):
     global N
@@ -47,24 +56,36 @@ def Mul(a: BigFloat, b: BigFloat, precision = 2026):
     result_len = len(a_blocks) + len(b_blocks) - 1
     N = next_power_two(result_len)
 
+    w_default, w_revers = get_cache_roots(N)
+
     a_blocks += [0] * (N - len(a_blocks))
     b_blocks += [0] * (N - len(b_blocks))
 
-    a_blocks = make_complex_elements(a_blocks)
-    b_blocks = make_complex_elements(b_blocks)
+    c = [0] * N
 
-    a_revers = reverse_bits(a_blocks)
-    b_revers = reverse_bits(b_blocks)
+    for i in range(N):
+        c[i] = (complex(a_blocks[i], b_blocks[i]))
 
-    a_fft = FFT(a_revers)
-    b_fft = FFT(b_revers)
+    reverse_bits(c)
+    c_fft = FFT(c, w_default)
+
+    a_fft = []
+    b_fft = []
+
+    for k in range(N):
+        a_fft.append((c_fft[k] + c_fft[(N - k) % N].conjugate()) / 2)
+        b_fft.append((c_fft[k] - c_fft[(N - k) % N].conjugate()) / (2j))
 
     c_blocks = [0] * N
 
     for i in range(N):
         c_blocks[i] = a_fft[i] * b_fft[i]
 
-    c_blocks = FFT(reverse_bits(c_blocks), True)
+    reverse_bits(c_blocks)
+    c_blocks = FFT(c_blocks, w_revers)
+
+    for i in range(len(c_blocks)):
+        c_blocks[i] = c_blocks[i] / N
 
     coeffs = []
 
@@ -111,24 +132,33 @@ def Mul(a: BigFloat, b: BigFloat, precision = 2026):
 """
 
     
-def reverse_bits(A: list[int]):
-    n = len(A)
-    bits_count = (n - 1).bit_length()
+# def reverse_bits(A: list[int]):
+#     n = len(A)
+#     bits_count = (n - 1).bit_length()
     
 
-    for i in range(n):
-        j = reverse_bits_index(i, bits_count)
+#     for i in range(n):
+#         j = reverse_bits_index(i, bits_count)
+
+#         if i < j:
+#             A[i], A[j] = A[j], A[i]
+
+#     return A
+
+def reverse_bits(a: list[int]):
+    n = len(a)
+    j = 0
+    for i in range(1, n):
+        bit = n >> 1
+        while j & bit:
+            j ^= bit
+            bit >>= 1
+        j ^= bit
 
         if i < j:
-            A[i], A[j] = A[j], A[i]
-
-    return A
-
-
-def reverse_bits_index(i: int, bits_count: int) -> int:
-    binary = bin(i)[2:].zfill(bits_count) 
-    reversed_binary = binary[::-1]
-    return int(reversed_binary, 2)
+            temp = a[i]
+            a[i] = a[j]
+            a[j] = temp
 
 """
 def Reverse_Bits
@@ -146,37 +176,24 @@ def Reverse_Bits
 
 """
 
-def FFT(A: list[int], invert=False) -> list[complex]:
+def FFT(A: list[complex], w_root: list[complex]) -> list[complex]:
     length = 2
     n = len(A)
-
+    if n == 1:
+        return A
     while length <= len(A):
-
-        if invert:
-            angle = 2 * pi / length
-        else:
-            angle = -2 * pi / length
-
-        w_len = complex(cos(angle), sin(angle)) # комплексноый поворот по формуле эйлера
-
+        step = n // length
         for start in range(0, n, length):
-            w = 1
-
+            
             for j in range(0, length // 2):
+                w = w_root[j * step]
 
                 u = A[start + j]
                 v = A[start + j + length // 2] 
 
                 A[start + j] = u + v * w
                 A[start + j + length // 2] = u - v * w
-
-                w = w * w_len
-
         length *= 2
-
-    if invert:
-        for i in range(n):
-            A[i] = A[i] / n
 
     return A
 """
@@ -237,41 +254,8 @@ def short_Mul(num: BigFloat, multiplier, exp_multiplier=0):
 
     return BigFloat(res_sign, num_blocks, res_exp)
 
-def Pow_TWO(a: BigFloat, precision=2026):
-    global N
-
-    result_sign = 1
-    result_exp10 = get_exp10(a) * 2
-
-    a_blocks = get_blocks(a).copy()
-
-    result_len = 2 * len(a_blocks) - 1
-    N = next_power_two(result_len)
-
-    a_blocks += [0] * (N - len(a_blocks))
-    a_blocks = make_complex_elements(a_blocks)
-    a_revers = reverse_bits(a_blocks)
-    a_fft = FFT(a_revers)
-
-    c_blocks = [0] * N
-    for i in range(N):
-        c_blocks[i] = a_fft[i] * a_fft[i]
-
-    c_blocks = FFT(reverse_bits(c_blocks), True)
-
-    coeffs = []
-
-    for i in range(N):
-        coeffs.append(round(c_blocks[i].real))
-
-    res_BF = normalize(BigFloat(result_sign, make_carry(coeffs), result_exp10))
-
-    if precision != 0:
-        res_BF = BigFloat_round(res_BF, precision)
-
-    return res_BF
-
 if __name__ == '__main__':
+
     from decimal import getcontext, Decimal
     from time import perf_counter
     from test_utility import make_str_number

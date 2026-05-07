@@ -142,18 +142,15 @@ def bigfloat_string(num: BigFloat):
         return num_sign + "0." + "0" * (-dot_pos) + output_line
     
 
-def _div_blocks_by_10(blocks: list[int]):
+def div_blocks_10(blocks: list[int]):
     BASE = get_BASE()
     carry = 0
 
-    # Делим всё большое число на 10.
-    # Идём от старших блоков к младшим.
     for i in range(len(blocks) - 1, -1, -1):
-        cur = carry * BASE + blocks[i]
-        blocks[i] = cur // 10
-        carry = cur % 10
+        top = carry * BASE + blocks[i]
+        blocks[i] = top // 10
+        carry = top % 10
 
-    # Убираем старшие нулевые блоки
     while len(blocks) > 1 and blocks[-1] == 0:
         blocks.pop()
 
@@ -163,8 +160,6 @@ def normalize(num: BigFloat):
     exp10 = num.exp10
     blocks = num.blocks.copy()
 
-    BASE_DIGITS = get_BASE_DIGITS()
-
     while blocks and blocks[-1] == 0:
         blocks.pop()
 
@@ -172,18 +167,10 @@ def normalize(num: BigFloat):
         return BigFloat(1, [0], 0)
 
     if exp10 < 0:
-        drop = 0
-        max_drop = min((-exp10) // BASE_DIGITS, len(blocks) - 1)
-
-        while drop < max_drop and blocks[drop] == 0:
-            drop += 1
-
-        if drop:
-            blocks = blocks[drop:]
-            exp10 += drop * BASE_DIGITS
+        blocks, exp10 = drop_zero_blocks(blocks, exp10)
 
         while exp10 < 0 and blocks[0] % 10 == 0:
-            _div_blocks_by_10(blocks)
+            div_blocks_10(blocks)
             exp10 += 1
 
     while blocks and blocks[-1] == 0:
@@ -193,6 +180,29 @@ def normalize(num: BigFloat):
         return BigFloat(1, [0], 0)
 
     return BigFloat(sign, blocks, exp10)
+
+def drop_zero_blocks(blocks: list[int], exp10: int):
+    BASE_DIGITS = get_BASE_DIGITS()
+
+    drop = 0
+
+    while True:
+        if exp10 + BASE_DIGITS > 0:
+            break
+
+        if len(blocks) - drop <= 1:
+            break
+
+        if blocks[drop] != 0:
+            break
+
+        drop += 1
+        exp10 += BASE_DIGITS
+
+    if drop != 0:
+        blocks = blocks[drop:]
+
+    return blocks, exp10
 
 def make_carry(coeffs: list[int]):
     BASE = get_BASE()

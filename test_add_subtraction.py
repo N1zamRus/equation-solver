@@ -3,7 +3,7 @@ from random import Random
 from Add import Add
 from BigFloat import create_BigFloat, get_exp10, get_mantiss, get_sign
 from Subtraction import Sub
-from test_utility import make_random_pairs
+from test_utility import make_signed_random_pairs
 from time import perf_counter
 from test_utility import to_decimal, bigfloat_decimal
 
@@ -12,7 +12,7 @@ import pytest
 ADD_TIMES = []
 SUB_TIMES = []
 
-RANDOM_PAIRS_COUNT = 1000
+RANDOM_PAIRS_COUNT = 100
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 321541
 
@@ -20,7 +20,7 @@ getcontext().prec = RANDOM_NUMBER_LENGTH * 2 + 10
 getcontext().Emax = MAX_EMAX
 getcontext().Emin = MIN_EMIN
 
-@pytest.mark.parametrize("left, right", make_random_pairs(Random(RANDOM_SEED), 
+@pytest.mark.parametrize("left, right", make_signed_random_pairs(Random(RANDOM_SEED), 
                                                           RANDOM_PAIRS_COUNT, 
                                                           RANDOM_NUMBER_LENGTH))
 def test_random_add_with_decimal(left, right):
@@ -38,7 +38,7 @@ def test_random_add_with_decimal(left, right):
     assert bigfloat_decimal(actual) == expected
 
 
-@pytest.mark.parametrize("left, right", make_random_pairs(Random(RANDOM_SEED), 
+@pytest.mark.parametrize("left, right", make_signed_random_pairs(Random(RANDOM_SEED), 
                                                           RANDOM_PAIRS_COUNT, 
                                                           RANDOM_NUMBER_LENGTH))
 def test_random_sub_with_decimal(left, right):

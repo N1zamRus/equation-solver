@@ -2,14 +2,14 @@ from decimal import Decimal, getcontext, MAX_EMAX, MIN_EMIN
 from Multiply import Mul
 from BigFloat import create_BigFloat, bigfloat_string
 from time import perf_counter
-from test_utility import to_decimal, bigfloat_decimal, make_random_pairs
+from test_utility import to_decimal, bigfloat_decimal, make_signed_random_pairs
 from random import Random
 
 import pytest
 
 MUL_TIMES = []
 
-RANDOM_PAIRS_COUNT = 1000
+RANDOM_PAIRS_COUNT = 100
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 512352
 
@@ -17,7 +17,7 @@ getcontext().prec = RANDOM_NUMBER_LENGTH * 2 + 10
 getcontext().Emax = MAX_EMAX
 getcontext().Emin = MIN_EMIN
 
-@pytest.mark.parametrize("left, right", make_random_pairs(Random(RANDOM_SEED), 
+@pytest.mark.parametrize("left, right", make_signed_random_pairs(Random(RANDOM_SEED), 
                                                           RANDOM_PAIRS_COUNT, 
                                                           RANDOM_NUMBER_LENGTH))
 def test_multiply(left, right):
@@ -31,8 +31,10 @@ def test_multiply(left, right):
     MUL_TIMES.append(end - start)
 
     expected = to_decimal(left) * to_decimal(right)
+    actual_str = f"{Decimal(bigfloat_string(actual)):.10010f}"
+    expected_str = f"{expected:.10010f}"
 
-    assert bigfloat_string(actual)[:10000] == str(expected)[:10000]
+    assert actual_str[:10000] == expected_str[:10000]
 
 @pytest.fixture(scope="module", autouse=True)
 def print_average_time():

@@ -25,9 +25,10 @@ def make_random_positive_numbers(rng: Random, count_test=RANDOM_VALUES_COUNT, le
 
     for _ in range(count_test):
         value = make_str_number(rng, length)
+        decimal_value = Decimal(value.replace(',', '.'))
 
-        if Decimal(value.replace(',', '.')) == 0:
-            value = '1'
+        if decimal_value <= 0:
+            continue
 
         numbers.append(value)
 
