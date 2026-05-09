@@ -1,8 +1,8 @@
-from BigFloat import BigFloat, get_BASE, create_BigFloat
+from core.BigFloat import BigFloat, get_BASE, create_BigFloat
 
 
 def Sub(a: BigFloat, b: BigFloat):
-    from Add import Add
+    from core.Add import Add
 
     return Add(a, -b)
 
