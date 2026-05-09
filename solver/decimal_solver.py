@@ -101,6 +101,10 @@ def calc_q(b: Decimal, sqrt_d: Decimal) -> Decimal:
     return Decimal('-0.5') * (b - sqrt_d)
 
 
+def normalize_zero(value: Decimal) -> Decimal:
+    return ZERO if value == ZERO else value
+
+
 def roots_calc(coefs: Coefs, discriminant: Decimal):
     a = get_a(coefs)
     b = get_b(coefs)
@@ -109,8 +113,8 @@ def roots_calc(coefs: Coefs, discriminant: Decimal):
     sqrt_d = discriminant.sqrt()
     q = calc_q(b, sqrt_d)
 
-    x1 = q / a
-    x2 = c / q
+    x1 = normalize_zero(q / a)
+    x2 = normalize_zero(c / q)
 
     return x1, x2
 

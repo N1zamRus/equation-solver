@@ -11,35 +11,30 @@ from core.BigFloat import (
 from core.Subtraction import sub_abs
 
 
-def Add(a: BigFloat, b: BigFloat):
+def add_same_sign(a: BigFloat, b: BigFloat) -> BigFloat:
+    res_blocks = add_abs(get_blocks(a), get_blocks(b))
+    return normalize(BigFloat(get_sign(a), res_blocks, get_exp10(a)))
+
+
+def add_diff_sign(a: BigFloat, b: BigFloat) -> BigFloat:
+    if abs(a) > abs(b):
+        res_blocks = sub_abs(get_blocks(a), get_blocks(b))
+        return normalize(BigFloat(get_sign(a), res_blocks, get_exp10(a)))
+
+    if abs(a) < abs(b):
+        res_blocks = sub_abs(get_blocks(b), get_blocks(a))
+        return normalize(BigFloat(get_sign(b), res_blocks, get_exp10(a)))
+
+    return BigFloat(1, [0], 0)
+
+
+def Add(a: BigFloat, b: BigFloat) -> BigFloat:
     a, b = align(a, b)
 
-    a_blocks = get_blocks(a)
-    b_blocks = get_blocks(b)
-
     if get_sign(a) == get_sign(b):
-        res_blocks = add_abs(a_blocks, b_blocks)
-        res_sign = get_sign(a)
-        res_exp = get_exp10(a)
+        return add_same_sign(a, b)
 
-        return normalize(BigFloat(res_sign, res_blocks, res_exp))
-
-    if abs(a) > abs(b):
-        res_blocks = sub_abs(a_blocks, b_blocks)
-        res_sign = get_sign(a)
-        res_exp = get_exp10(a)
-
-        return normalize(BigFloat(res_sign, res_blocks, res_exp))
-
-    elif abs(a) < abs(b):
-        res_blocks = sub_abs(b_blocks, a_blocks)
-        res_sign = get_sign(b)
-        res_exp = get_exp10(a)
-
-        return normalize(BigFloat(res_sign, res_blocks, res_exp))
-
-    else:
-        return BigFloat(1, [0], 0)
+    return add_diff_sign(a, b)
 
 
 def add_abs(a_blocks: list[int], b_blocks: list[int]):

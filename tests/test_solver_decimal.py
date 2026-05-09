@@ -18,9 +18,9 @@ from tests.test_utility import (
 
 SOLVER_TIMES = []
 
-RANDOM_COEFS_COUNT = 100
+RANDOM_COEFS_COUNT = 1000
 RANDOM_NUMBER_LENGTH = 10000
-RANDOM_SEED = 255389
+RANDOM_SEED = 5124383
 
 getcontext().prec = 50000
 getcontext().Emax = MAX_EMAX
@@ -50,6 +50,28 @@ def make_random_coefficients(rng: Random, count_test, length):
         coefficients.append((a, b, c))
 
     return coefficients
+
+
+@pytest.mark.parametrize('a, b, c', [
+    ('1', '-3', '2'),
+    ('1', '2', '1'),
+    ('1', '0', '1'),
+    ('1', '0', '-4'),
+    ('1', '1', '0'),
+    ('2', '4', '2'),
+    ('1', '-2', '-3'),
+    ('3', '0', '0'),
+    ('1', '-1', '0'),
+    ('1', '0', '-1'),
+])
+def test_solver_edge_cases(a, b, c):
+    actual = solution_to_roots(bigfloat_solution_calc(Coefs(
+        create_BigFloat(a), create_BigFloat(b), create_BigFloat(c),)))
+
+    expected = solution_to_roots(decimal_solution_calc(Coefs(
+        to_decimal(a), to_decimal(b), to_decimal(c),)))
+
+    assert_roots_equal(actual, expected)
 
 
 @pytest.mark.parametrize(
