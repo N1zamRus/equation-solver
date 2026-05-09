@@ -17,7 +17,7 @@ from Subtraction import Sub
 BASE = get_BASE()
 
 def Div(a: BigFloat, b: BigFloat, precision=2026):
-    inv_b = Inv(b, precision=precision)
+    inv_b = Inv(b, iteration=12, precision=precision)
     return Mul(a, inv_b, precision)
 
 def make_x0(b: BigFloat):
@@ -54,7 +54,7 @@ def make_x0(b)
     8. В экспоненте возвращаем масштаб обратно и учитываем отброшенные блоки
     9. Возвращаем модуль BigFloat
 """
-def Inv(b: BigFloat, iteration=10, precision=2005, extra_blocks=5):
+def Inv(b: BigFloat, iteration=15, precision=2005, extra_blocks=5):
     result_sign = get_sign(b)
     b_abs = abs(normalize(b))
 

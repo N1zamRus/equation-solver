@@ -86,7 +86,7 @@ def make_x0(a, запаска = 2)
     10. Соберём наше число bigfloat(1, slice_blocks(str(res_mantiss)), res_exp)
 """        
 
-def Sqrt(a: BigFloat, precision = 2050, extra_blocks = 20, iteration = 10):
+def Sqrt(a: BigFloat, precision = 2050, extra_blocks = 20, iteration = 12):
     x_old = make_x0(a, 10)
     current_blocks = 2
     THREE = BigFloat(1, [3], 0)
