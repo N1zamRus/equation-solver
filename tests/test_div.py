@@ -19,7 +19,32 @@ getcontext().Emax = MAX_EMAX
 getcontext().Emin = MIN_EMIN
 
 
-@pytest.mark.parametrize("left, right",make_signed_random_pairs(Random(RANDOM_SEED), RANDOM_PAIRS_COUNT, RANDOM_NUMBER_LENGTH))
+@pytest.mark.parametrize("left, right", [
+    ('1', '1'),
+    ('0', '1'),
+    ('-1', '1'),
+    ('1', '-1'),
+    ('-1', '-1'),
+    ('4', '2'),
+    ('1', '2'),
+    ('-6', '3'),
+    ('1', '3'),
+    ('100', '1000'),
+])
+def test_division_edge_cases(left, right):
+    left_bigfloat = create_BigFloat(left)
+    right_bigfloat = create_BigFloat(right)
+
+    actual = Div(left_bigfloat, right_bigfloat)
+
+    expected = to_decimal(left) / to_decimal(right)
+    actual_str = f"{Decimal(bigfloat_string(actual)):.10010f}"
+    expected_str = f"{expected:.10010f}"
+
+    assert actual_str[:10000] == expected_str[:10000]
+
+
+@pytest.mark.parametrize("left, right", make_signed_random_pairs(Random(RANDOM_SEED), RANDOM_PAIRS_COUNT, RANDOM_NUMBER_LENGTH))
 def test_division(left, right):
     left_bigfloat = create_BigFloat(left)
     right_bigfloat = create_BigFloat(right)

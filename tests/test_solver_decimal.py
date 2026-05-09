@@ -52,6 +52,28 @@ def make_random_coefficients(rng: Random, count_test, length):
     return coefficients
 
 
+@pytest.mark.parametrize('a, b, c', [
+    ('1', '-3', '2'),
+    ('1', '2', '1'),
+    ('1', '0', '1'),
+    ('1', '0', '-4'),
+    ('1', '1', '0'),
+    ('2', '4', '2'),
+    ('1', '-2', '-3'),
+    ('3', '0', '0'),
+    ('1', '-1', '0'),
+    ('1', '0', '-1'),
+])
+def test_solver_edge_cases(a, b, c):
+    actual = solution_to_roots(bigfloat_solution_calc(Coefs(
+        create_BigFloat(a), create_BigFloat(b), create_BigFloat(c),)))
+
+    expected = solution_to_roots(decimal_solution_calc(Coefs(
+        to_decimal(a), to_decimal(b), to_decimal(c),)))
+
+    assert_roots_equal(actual, expected)
+
+
 @pytest.mark.parametrize(
     'a, b, c',
     make_random_coefficients(Random(RANDOM_SEED), RANDOM_COEFS_COUNT, RANDOM_NUMBER_LENGTH),

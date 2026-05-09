@@ -20,8 +20,54 @@ getcontext().prec = RANDOM_NUMBER_LENGTH * 2 + 10
 getcontext().Emax = MAX_EMAX
 getcontext().Emin = MIN_EMIN
 
-@pytest.mark.parametrize("left, right", make_signed_random_pairs(Random(RANDOM_SEED), 
-                                                          RANDOM_PAIRS_COUNT, 
+@pytest.mark.parametrize("left, right", [
+    ('0', '0'),
+    ('1', '0'),
+    ('0', '1'),
+    ('1', '-1'),
+    ('-1', '-1'),
+    ('1000000', '1'),
+    ('1', '0,1'),
+    ('999', '-1000'),
+    ('-0,5', '0,5'),
+    ('1', '0,000001'),
+])
+def test_add_edge_cases(left, right):
+    left_bigfloat = create_BigFloat(left)
+    right_bigfloat = create_BigFloat(right)
+
+    actual = Add(left_bigfloat, right_bigfloat)
+
+    expected = to_decimal(left) + to_decimal(right)
+
+    assert bigfloat_decimal(actual) == expected
+
+
+@pytest.mark.parametrize("left, right", [
+    ('0', '0'),
+    ('1', '1'),
+    ('1', '0'),
+    ('0', '1'),
+    ('-1', '-1'),
+    ('1000000', '999999'),
+    ('1,5', '0,5'),
+    ('-5', '-3'),
+    ('0,1', '0,1'),
+    ('100', '-100'),
+])
+def test_sub_edge_cases(left, right):
+    left_bigfloat = create_BigFloat(left)
+    right_bigfloat = create_BigFloat(right)
+
+    actual = Sub(left_bigfloat, right_bigfloat)
+
+    expected = to_decimal(left) - to_decimal(right)
+
+    assert bigfloat_decimal(actual) == expected
+
+
+@pytest.mark.parametrize("left, right", make_signed_random_pairs(Random(RANDOM_SEED),
+                                                          RANDOM_PAIRS_COUNT,
                                                           RANDOM_NUMBER_LENGTH))
 def test_random_add_with_decimal(left, right):
     left_bigfloat = create_BigFloat(left)
@@ -55,7 +101,6 @@ def test_random_sub_with_decimal(left, right):
 
     assert bigfloat_decimal(actual) == expected
 
-    """узкие случаи"""
 
 @pytest.fixture(scope="module", autouse=True)
 def print_average_operation_time():
