@@ -18,9 +18,9 @@ from tests.test_utility import (
 
 SOLVER_TIMES = []
 
-RANDOM_COEFS_COUNT = 10
+RANDOM_COEFS_COUNT = 1000
 RANDOM_NUMBER_LENGTH = 10000
-RANDOM_SEED = 255389
+RANDOM_SEED = 5124383
 
 getcontext().prec = 50000
 getcontext().Emax = MAX_EMAX
