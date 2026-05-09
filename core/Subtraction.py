@@ -1,4 +1,5 @@
 from core.BigFloat import BigFloat, get_BASE, create_BigFloat
+from core.BigFloat_utility import remove_top_zeros
 
 
 def Sub(a: BigFloat, b: BigFloat):
@@ -28,14 +29,4 @@ def sub_abs(a_blocks: list[int], b_blocks: list[int]) -> list[int]:
 
         result.append(total)
 
-    while result and result[-1] == 0:
-        result.pop()
-
-    return result
-
-
-if __name__ == "__main__":
-    a = create_BigFloat("5")
-    b = create_BigFloat("2")
-
-    print(Sub(a, b))
+    return remove_top_zeros(result)
