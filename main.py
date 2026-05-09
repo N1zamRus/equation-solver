@@ -1,7 +1,7 @@
-from interpreter import ThreeBigFloats
-from models import Coefs
-from solver import solution_calc, output_solution
-from BigFloat import bigfloat_string
+from input.interpreter import ThreeBigFloats
+from solver.models import Coefs
+from solver.solver import solution_calc, output_solution
+from core.BigFloat import bigfloat_string
 
 
 def read_coefficients():
