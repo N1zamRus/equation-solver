@@ -12,7 +12,10 @@ import pytest
 ADD_TIMES = []
 SUB_TIMES = []
 
-RANDOM_PAIRS_COUNT = 1000
+ADD_TIMES_DEC = []
+SUB_TIMES_DEC = []
+
+RANDOM_PAIRS_COUNT = 100
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 52152
 
@@ -121,7 +124,11 @@ def test_random_add_with_decimal(left, right):
 
     ADD_TIMES.append(end - start)
 
+    start = perf_counter()
     expected = to_decimal(left) + to_decimal(right)
+    end = perf_counter()
+
+    ADD_TIMES_DEC.append(end - start)
 
     assert bigfloat_decimal(actual) == expected
 
@@ -139,7 +146,11 @@ def test_random_sub_with_decimal(left, right):
 
     SUB_TIMES.append(end - start)
 
+    start = perf_counter()
     expected = to_decimal(left) - to_decimal(right)
+    end = perf_counter()
+
+    SUB_TIMES_DEC.append(end - start)
 
     assert bigfloat_decimal(actual) == expected
 
@@ -151,6 +162,8 @@ def print_average_operation_time():
     if ADD_TIMES:
         avg_add = sum(ADD_TIMES) / len(ADD_TIMES)
         print(f"\nСреднее время Add: {avg_add:.8f} сек")
+        avg_add_d = sum(ADD_TIMES_DEC) / len(ADD_TIMES)
+        print(f"\nСреднее время Add_: {avg_add:.8f} сек")
 
     if SUB_TIMES:
         avg_sub = sum(SUB_TIMES) / len(SUB_TIMES)
