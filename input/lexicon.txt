@@ -1,15 +1,24 @@
 digit                = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
-without_Null_digit   = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+without_zero_digit   = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+
 dot                  = "." | ","
 sign                 = "+" | "-"
 exp                  = "e" | "E"
 zero                 = "0"
+nan                  = "nan"
+infinity             = "Infinity" | "infinity" | "inf"
+underline            = "_"
 
+digit_part           = [underline], digit
+integer              = zero | without_zero_digit, {digit_part}
 
-integer         = zero | without_Null_digit, {digit}
-signed_integer  = [sign], integer
+exponent             = exp, [sign], integer
 
-exponent        = exp, [sign], without_Null_digit, {digit}
-frac            = dot, digit, {digit}
+frac_after_integer   = dot, [digit, {digit_part}]
+frac_without_integer = dot, digit, {digit_part}
 
-number          = [sign], (integer, [frac] | frac), [exponent]
+number               = (integer, [frac_after_integer] | frac_without_integer), [exponent]
+
+abs_value            = number | infinity | nan
+
+float                = [sign], abs_value

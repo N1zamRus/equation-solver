@@ -1,143 +1,196 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
+
 from core.BigFloat import create_BigFloat
-
-
-class Text:
-    def __init__(self, text):
-        self.text = text
-        self.pos = 0
-
-    def current_char(self):
-        if self.is_end():
-            return None
-        return self.text[self.pos]
-
-    def next_char(self):
-        self.pos += 1
-
-    def is_end(self) -> bool:
-        return self.pos >= len(self.text)
+from interpreter_utility import (
+    ParseResult,
+    ShowErrorMassege,
+    is_digit,
+    is_dot,
+    is_exp,
+    is_sign,
+    is_without_zero_digit,
+    is_zero,
+    parse_digit_parts,
+    parse_full_token,
+    parse_literal,
+)
 
 
 class Node(ABC):
     @abstractmethod
-    def interpret(self, text: Text):
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
         pass
 
 
 class Integer(Node):
-    """integer = zero | without_Null_digit, {digit}"""
+    """integer = zero | without_zero_digit, {digit_part}"""
 
-    def interpret(self, text: Text):
-        start_pos = text.pos
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
+        start = pos
 
-        if is_zero(text.current_char()):
-            text.next_char()
-            return True
+        if pos >= len(source):
+            return ParseResult(False, start, "Ожидалось целое число")
 
-        if is_without_null_digit(text.current_char()):
-            text.next_char()
-            while is_digit(text.current_char()):
-                text.next_char()
+        if is_zero(source[pos]):
+            return ParseResult(True, pos + 1)
 
-            return True
+        if is_without_zero_digit(source[pos]):
+            pos += 1
+            pos = parse_digit_parts(source, pos)
+            return ParseResult(True, pos)
 
-        text.pos = start_pos
-        return False
-
-
-class SignedInteger(Node):
-    """signed_integer = [sign], integer"""
-
-    def interpret(self, text: Text):
-        start_pos = text.pos
-
-        if is_sign(text.current_char()):
-            text.next_char()
-
-        if Integer().interpret(text):
-            return True
-
-        text.pos = start_pos
-        return False
-
-
-class Fraction(Node):
-    """frac = dot, digit, {digit}"""
-
-    def interpret(self, text: Text):
-        start_pos = text.pos
-        if not is_dot(text.current_char()):
-            text.pos = start_pos
-            return False
-
-        text.next_char()
-        if not is_digit(text.current_char()):
-            text.pos = start_pos
-            return False
-
-        text.next_char()
-        while is_digit(text.current_char()):
-            text.next_char()
-
-        return True
+        return ParseResult(False, start, "Ожидалось целое число")
 
 
 class Exponent(Node):
-    """exponent = exp, [sign], without_Null_digit, {digit}"""
+    """exponent = exp, [sign], integer"""
 
-    def interpret(self, text: Text):
-        start_pos = text.pos
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
+        start = pos
 
-        if not is_exp(text.current_char()):
-            text.pos = start_pos
-            return False
+        if pos >= len(source) or not is_exp(source[pos]):
+            return ParseResult(False, start)
 
-        text.next_char()
+        pos += 1
 
-        if is_sign(text.current_char()):
-            text.next_char()
+        if pos < len(source) and is_sign(source[pos]):
+            pos += 1
 
-        if not is_without_null_digit(text.current_char()):
-            text.pos = start_pos
-            return False
+        result = Integer().interpret(source, pos)
+        if not result.ok:
+            return ParseResult(False, start, "После exponent ожидалось целое число")
 
-        text.next_char()
+        return ParseResult(True, result.pos)
 
-        while is_digit(text.current_char()):
-            text.next_char()
 
-        return True
+class FractionAfterInteger(Node):
+    """frac_after_integer = dot, [digit, {digit_part}]"""
+
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
+        start = pos
+
+        if pos >= len(source) or not is_dot(source[pos]):
+            return ParseResult(False, start)
+
+        pos += 1
+
+        if pos < len(source) and is_digit(source[pos]):
+            pos += 1
+            pos = parse_digit_parts(source, pos)
+
+        return ParseResult(True, pos)
+
+
+class FractionWithoutInteger(Node):
+    """frac_without_integer = dot, digit, {digit_part}"""
+
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
+        start = pos
+
+        if pos >= len(source) or not is_dot(source[pos]):
+            return ParseResult(False, start)
+
+        pos += 1
+
+        if pos >= len(source) or not is_digit(source[pos]):
+            return ParseResult(False, start, "После точки или запятой ожидалась цифра")
+
+        pos += 1
+        pos = parse_digit_parts(source, pos)
+
+        return ParseResult(True, pos)
 
 
 class Number(Node):
-    """number = [sign], (integer, [frac] | frac), [exponent]"""
+    """number = (integer, [frac_after_integer] | frac_without_integer), [exponent]"""
 
-    def interpret(self, text: Text):
-        start_pos = text.pos
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
+        start = pos
 
-        if is_sign(text.current_char()):
-            text.next_char()
+        result = Integer().interpret(source, pos)
 
-        if Integer().interpret(text):
-            Fraction().interpret(text)
+        if result.ok:
+            pos = result.pos
 
-        elif Fraction().interpret(text): # на случай .3123
-            pass
+            frac_result = FractionAfterInteger().interpret(source, pos)
+            if frac_result.ok:
+                pos = frac_result.pos
 
         else:
-            text.pos = start_pos
-            ShowErrorMassege(f"Не обработался токен: {text.text}, '{text.current_char()}'")
-            return False
+            result = FractionWithoutInteger().interpret(source, pos)
+            if not result.ok:
+                return ParseResult(False, start, "Ожидалось число")
 
-        Exponent().interpret(text)
+            pos = result.pos
 
-        if not text.is_end():
-            text.pos = start_pos
-            ShowErrorMassege(f"Обработались не все символы у Number: {text.text}, '{text.current_char()}'")
-            return False
+        exp_result = Exponent().interpret(source, pos)
+        if exp_result.ok:
+            pos = exp_result.pos
+        elif pos < len(source) and is_exp(source[pos]):
+            return exp_result
 
-        return True
+        return ParseResult(True, pos)
+
+
+class Nan(Node):
+    """nan = "nan"""
+
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
+        return parse_literal(source, pos, "nan")
+
+
+class Infinity(Node):
+    """infinity = "Infinity" | "infinity" | "inf"""
+
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
+        start = pos
+
+        for literal in ("Infinity", "infinity", "inf"):
+            result = parse_literal(source, start, literal)
+            if result.ok:
+                return result
+
+        return ParseResult(False, start)
+
+
+class AbsValue(Node):
+    """abs_value = number | infinity | nan"""
+
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
+        start = pos
+
+        result = Number().interpret(source, pos)
+        if result.ok:
+            return result
+
+        result = Infinity().interpret(source, start)
+        if result.ok:
+            return result
+
+        result = Nan().interpret(source, start)
+        if result.ok:
+            return result
+
+        return ParseResult(False, start, "Ожидалось число, infinity, inf или nan")
+
+
+class Float(Node):
+    """float = [sign], abs_value"""
+
+    def interpret(self, source: str, pos: int = 0) -> ParseResult:
+        start = pos
+
+        if pos < len(source) and is_sign(source[pos]):
+            pos += 1
+
+        result = AbsValue().interpret(source, pos)
+        if not result.ok:
+            return ParseResult(False, start, result.error)
+
+        return ParseResult(True, result.pos)
+
 
 class ThreeBigFloats:
     def interpret(self, text: str):
@@ -148,46 +201,35 @@ class ThreeBigFloats:
             return None
 
         for number in numbers:
-            if not is_number(number):
-                ShowErrorMassege(f"Некорректное число: {number}")
+            result = parse_float_token(number)
+            if not result.ok:
+                ShowErrorMassege(result.error)
                 return None
 
-        return (create_BigFloat(numbers[0]),
-                create_BigFloat(numbers[1]),
-                create_BigFloat(numbers[2]),)
+        return (
+            create_BigFloat(numbers[0]),
+            create_BigFloat(numbers[1]),
+            create_BigFloat(numbers[2]),
+        )
 
-def is_digit(now_char: str)-> bool:
-    if now_char is not None and now_char in ("1234567890"):
-        return True
-    return False
 
-def is_zero(now_char: str)-> bool:
-    if now_char is not None and now_char == "0":
-        return True
-    return False
+def parse_float_token(source: str) -> ParseResult:
+    result = Float().interpret(source, 0)
 
-def is_without_null_digit(now_char: str)-> bool:
-    if now_char is not None and now_char in ("123456789"):
-        return True
-    return False
+    if not result.ok:
+        return result
 
-def is_sign(now_char: str)-> bool:
-    if now_char is not None and now_char in "-+":
-        return True
-    return False
+    if result.pos != len(source):
+        bad_char = source[result.pos]
+        return ParseResult(False, result.pos, f"Некорректный символ после float: {bad_char} в токене {source}",)
 
-def is_dot(now_char: str)-> bool:
-    if now_char is not None and now_char in ".,":
-        return True
-    return False
+    return result
 
-def is_exp(now_char: str):
-    if now_char is not None and now_char in "eE":
-        return True
-    return False
 
-def ShowErrorMassege(mess):
-    print(mess)
+def is_number(source: str) -> bool:
+    return parse_float_token(source).ok
 
-def is_number(text: str) -> bool:
-    return Number().interpret(Text(text))
+
+def is_number(source: str) -> bool:
+    result = parse_float_token(source)
+    return result.ok
