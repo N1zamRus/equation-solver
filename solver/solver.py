@@ -3,6 +3,8 @@ from enum import Enum, auto
 from solver.models import Coefs, ComplexBigFloat, complex_bigfloat_string, Solution, get_a, get_b, get_c, get_x1, get_x2, get_solve_type
 from core.BigFloat import BigFloat, is_zero, get_sign, bigfloat_string
 from core.BigFloat_math import Add, Sub, Mul, short_Mul, Div, Sqrt
+from core.Special_values import has_special_coefs
+from solver.special_solver import special_solution_calc
 
 
 ZERO = BigFloat(1, [0], 0)
@@ -122,9 +124,14 @@ def quadratic_solve(coefs: Coefs) -> Solution:
     )
 
 
+
 def solution_calc(coefs: Coefs) -> Solution:
+    if has_special_coefs(coefs):
+        return special_solution_calc(coefs)
+
     if is_linear(coefs):
         return linear_solve(coefs)
+
     return quadratic_solve(coefs)
 
 

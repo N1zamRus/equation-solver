@@ -19,6 +19,7 @@ from core.BigFloat_utility import (
     calc_new_exp,
     no_rounding_needed,
 )
+from core.Special_values import Nan, Infinity
 
 
 class BigFloat:
@@ -87,9 +88,16 @@ def is_zero(number: BigFloat) -> bool:
 
 
 def create_BigFloat(num: str) -> BigFloat:
-    num = num.replace(",", ".")
+    num = num.replace(",", ".").replace("_", "")
 
     sign, num = parse_sign(num)
+
+    if num == "nan":
+        return Nan()
+
+    if num in ("inf", "Infinity", "infinity"):
+        return Infinity(sign)
+    
     num, exp_from_e = parse_exponent(num)
     num, exp_from_dot = parse_fraction(num)
 

@@ -1,163 +1,284 @@
-from dataclasses import dataclass
+from __future__ import annotations
 from abc import ABC, abstractmethod
-from core.BigFloat import BigFloat
+from dataclasses import dataclass
+
+from core.BigFloat import BigFloat, get_sign, is_zero
+from solver.models import Coefs
+from solver.models import get_a, get_b, get_c
+
+
+ZERO = BigFloat(1, [0], 0)
+
 
 class Special(ABC):
     @abstractmethod
-    def __add__(self, other):
+    def __add__(self, other: "Nan" | BigFloat | "Infinity"):
         pass
 
-    def __sub__(self, other):
+    @abstractmethod
+    def __radd__(self, other: "Nan" | BigFloat | "Infinity"):
         pass
 
-    def __truediv__(self, other):
+    @abstractmethod
+    def __sub__(self, other: "Nan" | BigFloat | "Infinity"):
         pass
 
+    @abstractmethod
+    def __rsub__(self, other: "Nan" | BigFloat | "Infinity"):
+        pass
+
+    @abstractmethod
+    def __mul__(self, other: "Nan" | BigFloat | "Infinity"):
+        pass
+
+    @abstractmethod
+    def __rmul__(self, other: "Nan" | BigFloat | "Infinity"):
+        pass
+
+    @abstractmethod
+    def __truediv__(self, other: "Nan" | BigFloat | "Infinity"):
+        pass
+
+    @abstractmethod
+    def __rtruediv__(self, other: "Nan" | BigFloat | "Infinity"):
+        pass
+
+    @abstractmethod
     def __neg__(self):
         pass
 
+    @abstractmethod
+    def __abs__(self):
+        pass
 
-"""
-class Nan:
-    
-    1. +
-        Вернуть nan
-
-    2. -
-        Вернуть nan
-
-    3. *
-        Вернуть nan
-
-    4. /
-        Вернуть nan
-"""
 
 class Nan(Special):
-    def __add__(self, other: "Nan" | "Infinity" | float):
+    def __add__(self, other: "Nan" | BigFloat | "Infinity"):
         return Nan()
 
-    def __sub__(self, other: "Nan" | "Infinity" | float):
+    def __radd__(self, other: "Nan" | BigFloat | "Infinity"):
         return Nan()
 
-    def __truediv__(self, other: "Nan" | "Infinity" | float):
+    def __sub__(self, other: "Nan" | BigFloat | "Infinity"):
+        return Nan()
+
+    def __rsub__(self, other: "Nan" | BigFloat | "Infinity"):
+        return Nan()
+
+    def __mul__(self, other: "Nan" | BigFloat | "Infinity"):
+        return Nan()
+
+    def __rmul__(self, other: "Nan" | BigFloat | "Infinity"):
+        return Nan()
+
+    def __truediv__(self, other: "Nan" | BigFloat | "Infinity"):
+        return Nan()
+
+    def __rtruediv__(self, other: "Nan" | BigFloat | "Infinity"):
         return Nan()
 
     def __neg__(self):
         return Nan()
-    
+
+    def __abs__(self):
+        return Nan()
+
+    def __eq__(self, other: "Nan" | BigFloat | "Infinity"):
+        return False
+
+    def __ne__(self, other: "Nan" | BigFloat | "Infinity"):
+        return True
+
+    def __lt__(self, other: "Nan" | BigFloat | "Infinity"):
+        return False
+
+    def __le__(self, other: "Nan" | BigFloat | "Infinity"):
+        return False
+
+    def __gt__(self, other: "Nan" | BigFloat | "Infinity"):
+        return False
+
+    def __ge__(self, other: "Nan" | BigFloat | "Infinity"):
+        return False
+
     def __repr__(self):
-        return "Nan"
+        return "nan"
 
-"""
 
-class Infinity:
-    self.sign = sign
-    1. +
-        Если other == nan, то вернём nan
-        Если other == inf и знаки разные то nan, если знаки одинаковые то inf * self.sign 
-        Если other == BigFloat, то вернём inf * self.sign 
-    2. -
-        Если other == nan, то вернём nan
-        Если other == inf и знаки разные то nan, если знаки одинаковые то inf * self.sign 
-        Если other == BigFloat, то вернём inf * self.sign 
-    3. *
-        Если other == nan, то вернём nan
-        Если other == inf, то inf * (self.sign * other.sign)
-        Если other == BigFloat, то вернём inf * (self.sign * other.sign)
-    4. /
-        Если other == nan, то вернём nan
-        Если other == inf, то nan
-        Если other == BigFloat, то вернём inf * (self.sign * other.sign)
-
-"""
 @dataclass
 class Infinity(Special):
     sign: int
 
-    def __add__(self, other: "Nan" | "Infinity" | float):
-        if isinstance(other, Nan): return Nan()
-        if isinstance(other, Infinity) and self.sign != other.sign: 
-            return Nan() 
-        elif isinstance(other, Infinity):
-            return Infinity(self.sign * other.sign)
-        elif isinstance(other, float):
-            return Infinity(1 if other >= 0 else -1)
-        
-    def __sub__(self, other: "Nan" | "Infinity" | float):
-        if isinstance(other, Nan): return Nan()
-        if isinstance(other, Infinity) and self.sign != other.sign: 
-            return Nan() 
-        elif isinstance(other, Infinity):
-            return Infinity(self.sign * other.sign)
-        elif isinstance(other, float):
-            return Infinity(1 if other >= 0 else -1)
-        
-    def __mul__(self, other: "Nan" | "Infinity" | float):
-        if isinstance(other, Nan):
+    def __add__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
             return Nan()
-        elif isinstance(other, Infinity):
-            return Infinity(self.sign * other.sign)
-        elif isinstance(other, float):
-            return Infinity(1 if other >= 0 else -1)
-        
-    def __truediv__(self, other: "Nan" | "Infinity" | float):
-        if isinstance(other, Nan) or isinstance(other, Infinity):
+
+        if is_infinity(other):
+            if self.sign != other.sign:
+                return Nan()
+            return Infinity(self.sign)
+
+        if is_finite(other):
+            return Infinity(self.sign)
+
+    def __radd__(self, other: "Nan" | BigFloat | "Infinity"):
+        return self.__add__(other)
+
+    def __sub__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
             return Nan()
-        else:
-            return Infinity(1 if other >= 0 else -1)
-                
-if __name__ == "__main__":
 
-    line = input().split()
-    a = float(line[0])
-    b = float(line[1])
-    c = float(line[2])
+        if is_infinity(other):
+            if self.sign == other.sign:
+                return Nan()
+            return Infinity(self.sign)
 
-    coefs = (a, b, c)
+        if is_finite(other):
+            return Infinity(self.sign)
 
-    def solution_calc(coefs):
-        if coefs[0] == 0:
-            linear_solve(coefs)
-            return 0
-        return quadratic_solve(coefs)
-    
-    def linear_solve(coefs: tuple):
-        b = coefs[1]
-        c = coefs[2]
+    def __rsub__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
+            return Nan()
 
-        if b == 0:
-            if c == 0:
-                print("Бесконечно много решений")
-            print("Нет решения")
+        if is_infinity(other):
+            return other.__sub__(self)
 
-        x = -c / b
-        print(x)
+        if is_finite(other):
+            return Infinity(-self.sign)
 
-    def quadratic_solve(coefs: tuple):
-        discriminant = calc_discriminant(coefs)
+    def __mul__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
+            return Nan()
 
-        if get_sign(discriminant) < 0:
-            return calc_complex(coefs, discriminant)
+        if is_infinity(other):
+            return Infinity(self.sign * other.sign)
 
-        if is_zero(discriminant):
-            denominator = short_Mul(get_a(coefs), 2, 0)
-            root = Div(-get_b(coefs), denominator, WORK_PRECISION)
-            return Solution(solv_type=SolutionState.SAME_ROOTS, x1=root)
+        if is_finite(other):
+            if is_zero_value(other):
+                return Nan()
+            return Infinity(self.sign * value_sign(other))
 
-        root1, root2 = roots_calc(coefs, discriminant)
-        return Solution(
-            solv_type=SolutionState.DIFFERENT_ROOTS,
-            x1=root1,
-            x2=root2,
-        )
-    
-    def calc_discriminant(coefs: tuple):
-        a = coefs[0]
-        b = coefs[1]
-        c = coefs[2]
+    def __rmul__(self, other: "Nan" | BigFloat | "Infinity"):
+        return self.__mul__(other)
 
-        b2 = b*b
-        four_ac = 4 * a * c
+    def __truediv__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
+            return Nan()
 
-        return Sub(b2, four_ac)
+        if is_infinity(other):
+            return Nan()
+
+        if is_finite(other):
+            if is_zero_value(other):
+                return Infinity(self.sign)
+            return Infinity(self.sign * value_sign(other))
+
+    def __rtruediv__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
+            return Nan()
+
+        if is_infinity(other):
+            return Nan()
+
+        if is_finite(other):
+            return ZERO
+
+    def __neg__(self):
+        return Infinity(-self.sign)
+
+    def __abs__(self):
+        return Infinity(1)
+
+    def __eq__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
+            return False
+
+        if is_infinity(other):
+            return self.sign == other.sign
+
+        return False
+
+    def __ne__(self, other: "Nan" | BigFloat | "Infinity"):
+        return not self.__eq__(other)
+
+    def __lt__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
+            return False
+
+        if is_infinity(other):
+            return self.sign < other.sign
+
+        if is_finite(other):
+            return self.sign < 0
+
+    def __le__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
+            return False
+
+        if is_infinity(other):
+            return self.sign <= other.sign
+
+        if is_finite(other):
+            return self.sign < 0
+
+    def __gt__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
+            return False
+
+        if is_infinity(other):
+            return self.sign > other.sign
+
+        if is_finite(other):
+            return self.sign > 0
+
+    def __ge__(self, other: "Nan" | BigFloat | "Infinity"):
+        if is_nan(other):
+            return False
+
+        if is_infinity(other):
+            return self.sign >= other.sign
+
+        if is_finite(other):
+            return self.sign > 0
+
+    def __repr__(self):
+        return "inf" if self.sign > 0 else "-inf"
+
+
+def is_nan(value: "Nan" | BigFloat | "Infinity"):
+    return isinstance(value, Nan)
+
+
+def is_infinity(value: "Nan" | BigFloat | "Infinity"):
+    return isinstance(value, Infinity)
+
+
+def is_special_value(value: "Nan" | BigFloat | "Infinity"):
+    return is_nan(value) or is_infinity(value)
+
+
+def is_finite(value: "Nan" | BigFloat | "Infinity"):
+    return isinstance(value, BigFloat)
+
+
+def is_zero_value(value: "Nan" | BigFloat | "Infinity"):
+    if isinstance(value, BigFloat):
+        return is_zero(value)
+    return False
+
+
+def value_sign(value: Nan | BigFloat | "Infinity"):
+    if isinstance(value, Infinity):
+        return value.sign
+
+    if isinstance(value, BigFloat):
+        if is_zero(value):
+            return 1
+        return get_sign(value)
+
+def has_special_coefs(coefs) -> bool:
+    return (
+        is_special_value(get_a(coefs))
+        or is_special_value(get_b(coefs))
+        or is_special_value(get_c(coefs))
+    )
