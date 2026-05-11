@@ -1,0 +1,746 @@
+SPECIAL VALUES BEHAVIOR TABLE
+WITHOUT SIGNED ZERO
+==============================
+
+FORMAT
+------
+
+Каждый раздел устроен так:
+
+Тип данных
+    Сложение с ним
+    Вычитание с ним
+    Умножение с ним
+    Деление с ним
+    Сравнения с ним
+    Унарные операции
+
+Здесь рассматривается вариант WITHOUT SIGNED ZERO:
+    +0 и -0 не различаются
+    -0 нормализуется в 0
+    ноль не хранит знак
+
+
+ОБОЗНАЧЕНИЯ
+-----------
+
+nan       = Not a Number
++inf      = положительная бесконечность
+-inf      = отрицательная бесконечность
+
+positive  = конечное число > 0
+negative  = конечное число < 0
+0         = обычный ноль без знака
+
+finite    = positive | negative | 0
+x         = любое значение: nan | +inf | -inf | positive | negative | 0
+
+
+============================================================
+TYPE: NaN
+============================================================
+
+Сложение с NaN
+--------------
+
+nan + nan        -> nan
+nan + +inf       -> nan
+nan + -inf       -> nan
+nan + positive   -> nan
+nan + negative   -> nan
+nan + 0          -> nan
+
+
+Вычитание с NaN
+---------------
+
+nan - nan        -> nan
+nan - +inf       -> nan
+nan - -inf       -> nan
+nan - positive   -> nan
+nan - negative   -> nan
+nan - 0          -> nan
+
+
+Умножение с NaN
+---------------
+
+nan * nan        -> nan
+nan * +inf       -> nan
+nan * -inf       -> nan
+nan * positive   -> nan
+nan * negative   -> nan
+nan * 0          -> nan
+
+
+Деление с NaN
+-------------
+
+nan / nan        -> nan
+nan / +inf       -> nan
+nan / -inf       -> nan
+nan / positive   -> nan
+nan / negative   -> nan
+nan / 0          -> nan
+
+
+Сравнения с NaN
+---------------
+
+nan == nan        -> false
+nan == +inf       -> false
+nan == -inf       -> false
+nan == positive   -> false
+nan == negative   -> false
+nan == 0          -> false
+
+nan != nan        -> true
+nan != +inf       -> true
+nan != -inf       -> true
+nan != positive   -> true
+nan != negative   -> true
+nan != 0          -> true
+
+nan < nan         -> false
+nan < +inf        -> false
+nan < -inf        -> false
+nan < positive    -> false
+nan < negative    -> false
+nan < 0           -> false
+
+nan <= nan        -> false
+nan <= +inf       -> false
+nan <= -inf       -> false
+nan <= positive   -> false
+nan <= negative   -> false
+nan <= 0          -> false
+
+nan > nan         -> false
+nan > +inf        -> false
+nan > -inf        -> false
+nan > positive    -> false
+nan > negative    -> false
+nan > 0           -> false
+
+nan >= nan        -> false
+nan >= +inf       -> false
+nan >= -inf       -> false
+nan >= positive   -> false
+nan >= negative   -> false
+nan >= 0          -> false
+
+
+Унарные операции с NaN
+---------------------
+
++nan              -> nan
+-nan              -> nan
+abs(nan)          -> nan
+
+
+============================================================
+TYPE: +Infinity
+============================================================
+
+Сложение с +Infinity
+--------------------
+
++inf + nan        -> nan
++inf + +inf       -> +inf
++inf + -inf       -> nan
++inf + positive   -> +inf
++inf + negative   -> +inf
++inf + 0          -> +inf
+
+
+Вычитание с +Infinity
+---------------------
+
++inf - nan        -> nan
++inf - +inf       -> nan
++inf - -inf       -> +inf
++inf - positive   -> +inf
++inf - negative   -> +inf
++inf - 0          -> +inf
+
+
+Умножение с +Infinity
+---------------------
+
++inf * nan        -> nan
++inf * +inf       -> +inf
++inf * -inf       -> -inf
++inf * positive   -> +inf
++inf * negative   -> -inf
++inf * 0          -> nan
+
+
+Деление с +Infinity
+-------------------
+
++inf / nan        -> nan
++inf / +inf       -> nan
++inf / -inf       -> nan
++inf / positive   -> +inf
++inf / negative   -> -inf
++inf / 0          -> +inf
+
+
+Сравнения с +Infinity
+---------------------
+
++inf == nan        -> false
++inf == +inf       -> true
++inf == -inf       -> false
++inf == positive   -> false
++inf == negative   -> false
++inf == 0          -> false
+
++inf != nan        -> true
++inf != +inf       -> false
++inf != -inf       -> true
++inf != positive   -> true
++inf != negative   -> true
++inf != 0          -> true
+
++inf < nan         -> false
++inf < +inf        -> false
++inf < -inf        -> false
++inf < positive    -> false
++inf < negative    -> false
++inf < 0           -> false
+
++inf <= nan        -> false
++inf <= +inf       -> true
++inf <= -inf       -> false
++inf <= positive   -> false
++inf <= negative   -> false
++inf <= 0          -> false
+
++inf > nan         -> false
++inf > +inf        -> false
++inf > -inf        -> true
++inf > positive    -> true
++inf > negative    -> true
++inf > 0           -> true
+
++inf >= nan        -> false
++inf >= +inf       -> true
++inf >= -inf       -> true
++inf >= positive   -> true
++inf >= negative   -> true
++inf >= 0          -> true
+
+
+Унарные операции с +Infinity
+----------------------------
+
++(+inf)            -> +inf
+-(+inf)            -> -inf
+abs(+inf)          -> +inf
+
+
+============================================================
+TYPE: -Infinity
+============================================================
+
+Сложение с -Infinity
+--------------------
+
+-inf + nan        -> nan
+-inf + +inf       -> nan
+-inf + -inf       -> -inf
+-inf + positive   -> -inf
+-inf + negative   -> -inf
+-inf + 0          -> -inf
+
+
+Вычитание с -Infinity
+---------------------
+
+-inf - nan        -> nan
+-inf - +inf       -> -inf
+-inf - -inf       -> nan
+-inf - positive   -> -inf
+-inf - negative   -> -inf
+-inf - 0          -> -inf
+
+
+Умножение с -Infinity
+---------------------
+
+-inf * nan        -> nan
+-inf * +inf       -> -inf
+-inf * -inf       -> +inf
+-inf * positive   -> -inf
+-inf * negative   -> +inf
+-inf * 0          -> nan
+
+
+Деление с -Infinity
+-------------------
+
+-inf / nan        -> nan
+-inf / +inf       -> nan
+-inf / -inf       -> nan
+-inf / positive   -> -inf
+-inf / negative   -> +inf
+-inf / 0          -> -inf
+
+
+Сравнения с -Infinity
+---------------------
+
+-inf == nan        -> false
+-inf == +inf       -> false
+-inf == -inf       -> true
+-inf == positive   -> false
+-inf == negative   -> false
+-inf == 0          -> false
+
+-inf != nan        -> true
+-inf != +inf       -> true
+-inf != -inf       -> false
+-inf != positive   -> true
+-inf != negative   -> true
+-inf != 0          -> true
+
+-inf < nan         -> false
+-inf < +inf        -> true
+-inf < -inf        -> false
+-inf < positive    -> true
+-inf < negative    -> true
+-inf < 0           -> true
+
+-inf <= nan        -> false
+-inf <= +inf       -> true
+-inf <= -inf       -> true
+-inf <= positive   -> true
+-inf <= negative   -> true
+-inf <= 0          -> true
+
+-inf > nan         -> false
+-inf > +inf        -> false
+-inf > -inf        -> false
+-inf > positive    -> false
+-inf > negative    -> false
+-inf > 0           -> false
+
+-inf >= nan        -> false
+-inf >= +inf       -> false
+-inf >= -inf       -> true
+-inf >= positive   -> false
+-inf >= negative   -> false
+-inf >= 0          -> false
+
+
+Унарные операции с -Infinity
+----------------------------
+
++(-inf)            -> -inf
+-(-inf)            -> +inf
+abs(-inf)          -> +inf
+
+
+============================================================
+TYPE: Zero
+============================================================
+
+Здесь 0 — это обычный ноль без знака.
++0 и -0 не различаются.
+
+
+Сложение с Zero
+---------------
+
+0 + nan          -> nan
+0 + +inf         -> +inf
+0 + -inf         -> -inf
+0 + positive     -> positive
+0 + negative     -> negative
+0 + 0            -> 0
+
+
+Вычитание с Zero
+----------------
+
+0 - nan          -> nan
+0 - +inf         -> -inf
+0 - -inf         -> +inf
+0 - positive     -> negative
+0 - negative     -> positive
+0 - 0            -> 0
+
+
+Умножение с Zero
+----------------
+
+0 * nan          -> nan
+0 * +inf         -> nan
+0 * -inf         -> nan
+0 * positive     -> 0
+0 * negative     -> 0
+0 * 0            -> 0
+
+
+Деление с Zero
+--------------
+
+0 / nan          -> nan
+0 / +inf         -> 0
+0 / -inf         -> 0
+0 / positive     -> 0
+0 / negative     -> 0
+0 / 0            -> nan
+
+
+Сравнения с Zero
+----------------
+
+0 == nan         -> false
+0 == +inf        -> false
+0 == -inf        -> false
+0 == positive    -> false
+0 == negative    -> false
+0 == 0           -> true
+
+0 != nan         -> true
+0 != +inf        -> true
+0 != -inf        -> true
+0 != positive    -> true
+0 != negative    -> true
+0 != 0           -> false
+
+0 < nan          -> false
+0 < +inf         -> true
+0 < -inf         -> false
+0 < positive     -> true
+0 < negative     -> false
+0 < 0            -> false
+
+0 <= nan         -> false
+0 <= +inf        -> true
+0 <= -inf        -> false
+0 <= positive    -> true
+0 <= negative    -> false
+0 <= 0           -> true
+
+0 > nan          -> false
+0 > +inf         -> false
+0 > -inf         -> true
+0 > positive     -> false
+0 > negative     -> true
+0 > 0            -> false
+
+0 >= nan         -> false
+0 >= +inf        -> false
+0 >= -inf        -> true
+0 >= positive    -> false
+0 >= negative    -> true
+0 >= 0           -> true
+
+
+Унарные операции с Zero
+-----------------------
+
++0               -> 0
+-0               -> 0
+abs(0)           -> 0
+
+
+============================================================
+TYPE: Positive finite
+============================================================
+
+positive = любое конечное число > 0
+
+
+Сложение с Positive finite
+--------------------------
+
+positive + nan        -> nan
+positive + +inf       -> +inf
+positive + -inf       -> -inf
+positive + positive   -> positive
+positive + negative   -> finite, знак зависит от модулей
+positive + 0          -> positive
+
+
+Вычитание с Positive finite
+---------------------------
+
+positive - nan        -> nan
+positive - +inf       -> -inf
+positive - -inf       -> +inf
+positive - positive   -> finite, знак зависит от модулей
+positive - negative   -> positive
+positive - 0          -> positive
+
+
+Умножение с Positive finite
+---------------------------
+
+positive * nan        -> nan
+positive * +inf       -> +inf
+positive * -inf       -> -inf
+positive * positive   -> positive
+positive * negative   -> negative
+positive * 0          -> 0
+
+
+Деление с Positive finite
+-------------------------
+
+positive / nan        -> nan
+positive / +inf       -> 0
+positive / -inf       -> 0
+positive / positive   -> positive
+positive / negative   -> negative
+positive / 0          -> +inf
+
+
+Сравнения с Positive finite
+---------------------------
+
+positive == nan        -> false
+positive == +inf       -> false
+positive == -inf       -> false
+positive == positive   -> depends on values
+positive == negative   -> false
+positive == 0          -> false
+
+positive != nan        -> true
+positive != +inf       -> true
+positive != -inf       -> true
+positive != positive   -> depends on values
+positive != negative   -> true
+positive != 0          -> true
+
+positive < nan         -> false
+positive < +inf        -> true
+positive < -inf        -> false
+positive < positive    -> depends on values
+positive < negative    -> false
+positive < 0           -> false
+
+positive <= nan        -> false
+positive <= +inf       -> true
+positive <= -inf       -> false
+positive <= positive   -> depends on values
+positive <= negative   -> false
+positive <= 0          -> false
+
+positive > nan         -> false
+positive > +inf        -> false
+positive > -inf        -> true
+positive > positive    -> depends on values
+positive > negative    -> true
+positive > 0           -> true
+
+positive >= nan        -> false
+positive >= +inf       -> false
+positive >= -inf       -> true
+positive >= positive   -> depends on values
+positive >= negative   -> true
+positive >= 0          -> true
+
+
+Унарные операции с Positive finite
+----------------------------------
+
++positive             -> positive
+-positive             -> negative
+abs(positive)         -> positive
+
+
+============================================================
+TYPE: Negative finite
+============================================================
+
+negative = любое конечное число < 0
+
+
+Сложение с Negative finite
+--------------------------
+
+negative + nan        -> nan
+negative + +inf       -> +inf
+negative + -inf       -> -inf
+negative + positive   -> finite, знак зависит от модулей
+negative + negative   -> negative
+negative + 0          -> negative
+
+
+Вычитание с Negative finite
+---------------------------
+
+negative - nan        -> nan
+negative - +inf       -> -inf
+negative - -inf       -> +inf
+negative - positive   -> negative
+negative - negative   -> finite, знак зависит от модулей
+negative - 0          -> negative
+
+
+Умножение с Negative finite
+---------------------------
+
+negative * nan        -> nan
+negative * +inf       -> -inf
+negative * -inf       -> +inf
+negative * positive   -> negative
+negative * negative   -> positive
+negative * 0          -> 0
+
+
+Деление с Negative finite
+-------------------------
+
+negative / nan        -> nan
+negative / +inf       -> 0
+negative / -inf       -> 0
+negative / positive   -> negative
+negative / negative   -> positive
+negative / 0          -> -inf
+
+
+Сравнения с Negative finite
+---------------------------
+
+negative == nan        -> false
+negative == +inf       -> false
+negative == -inf       -> false
+negative == positive   -> false
+negative == negative   -> depends on values
+negative == 0          -> false
+
+negative != nan        -> true
+negative != +inf       -> true
+negative != -inf       -> true
+negative != positive   -> true
+negative != negative   -> depends on values
+negative != 0          -> true
+
+negative < nan         -> false
+negative < +inf        -> true
+negative < -inf        -> false
+negative < positive    -> true
+negative < negative    -> depends on values
+negative < 0           -> true
+
+negative <= nan        -> false
+negative <= +inf       -> true
+negative <= -inf       -> false
+negative <= positive   -> true
+negative <= negative   -> depends on values
+negative <= 0          -> true
+
+negative > nan         -> false
+negative > +inf        -> false
+negative > -inf        -> true
+negative > positive    -> false
+negative > negative    -> depends on values
+negative > 0           -> false
+
+negative >= nan        -> false
+negative >= +inf       -> false
+negative >= -inf       -> true
+negative >= positive   -> false
+negative >= negative   -> depends on values
+negative >= 0          -> false
+
+
+Унарные операции с Negative finite
+----------------------------------
+
++negative             -> negative
+-negative             -> positive
+abs(negative)         -> positive
+
+
+============================================================
+MIN / MAX
+============================================================
+
+Политика для твоего BigFloat:
+если хотя бы один аргумент nan, возвращаем nan.
+
+
+min/max с NaN
+-------------
+
+min(nan, nan)        -> nan
+max(nan, nan)        -> nan
+
+min(nan, +inf)       -> nan
+max(nan, +inf)       -> nan
+
+min(+inf, nan)       -> nan
+max(+inf, nan)       -> nan
+
+min(nan, -inf)       -> nan
+max(nan, -inf)       -> nan
+
+min(-inf, nan)       -> nan
+max(-inf, nan)       -> nan
+
+min(nan, positive)   -> nan
+max(nan, positive)   -> nan
+
+min(positive, nan)   -> nan
+max(positive, nan)   -> nan
+
+min(nan, negative)   -> nan
+max(nan, negative)   -> nan
+
+min(negative, nan)   -> nan
+max(negative, nan)   -> nan
+
+min(nan, 0)          -> nan
+max(nan, 0)          -> nan
+
+min(0, nan)          -> nan
+max(0, nan)          -> nan
+
+
+min/max без NaN
+---------------
+
+min(+inf, +inf)      -> +inf
+max(+inf, +inf)      -> +inf
+
+min(-inf, -inf)      -> -inf
+max(-inf, -inf)      -> -inf
+
+min(+inf, -inf)      -> -inf
+max(+inf, -inf)      -> +inf
+
+min(-inf, +inf)      -> -inf
+max(-inf, +inf)      -> +inf
+
+min(+inf, finite)    -> finite
+max(+inf, finite)    -> +inf
+
+min(finite, +inf)    -> finite
+max(finite, +inf)    -> +inf
+
+min(-inf, finite)    -> -inf
+max(-inf, finite)    -> finite
+
+min(finite, -inf)    -> -inf
+max(finite, -inf)    -> finite
+
+min(0, positive)     -> 0
+max(0, positive)     -> positive
+
+min(positive, 0)     -> 0
+max(positive, 0)     -> positive
+
+min(0, negative)     -> negative
+max(0, negative)     -> 0
+
+min(negative, 0)     -> negative
+max(negative, 0)     -> 0
+
+min(positive, negative) -> negative
+max(positive, negative) -> positive

@@ -1,0 +1,393 @@
+1. Если хоть один коэффициент имеет значение nan, то x1 и x2 = nan
+
+2. Линейный случай: a = +0 или a = -0
+    
+    b = 0
+            a       b       c               result
+        -----------------------------------------------
+            0       0       0               INFINITE_SOLUTION
+            0       0       finite_nonzero  NO_SOLUTION
+            0       0       +inf            NO_SOLUTION
+            0       0       -inf            NO_SOLUTION
+            0       0       nan             nan, nan
+
+        Тесты
+        0 0 0       -> INFINITE_SOLUTION
+        0 -0 0      -> INFINITE_SOLUTION
+        0 0 5       -> NO_SOLUTION
+        0 0 -5      -> NO_SOLUTION
+        0 0 inf     -> NO_SOLUTION
+        0 0 -inf    -> NO_SOLUTION
+        0 0 nan     -> nan, nan
+
+    b != 0, тогда x = -c / b
+
+        a       b                  c               result
+    ----------------------------------------------------------
+        0       finite_nonzero     finite          x = -c / b
+        0       finite_nonzero     +inf            x = -inf / b-----------------|
+                                                                                |-----------------  +inf / positive = +inf
+        0       finite_nonzero     -inf            x = +inf / b-----------------|                   +inf / negative = -inf
+        0       finite_nonzero     nan             nan                                              -inf / positive = -inf
+                                                                                                    -inf / negative = +inf
+        Тесты
+        0 2 8       -> x = -4
+        0 -2 8      -> x = 4
+
+        0 2 inf     -> x = -inf
+        0 -2 inf    -> x = +inf
+
+        0 2 -inf    -> x = +inf
+        0 -2 -inf   -> x = -inf
+
+    b = +inf или b = -inf
+
+
+        a       b       c finite        result
+    -----------------------------------------------
+        0       +inf    finite          signed zero
+        0       -inf    finite          signed zero
+
+
+        a       b       c               result
+    -----------------------------------------------     
+        0       +inf    +inf            nan---------------------------------|
+        0       +inf    -inf            nan---------------------------------|---- inf / inf -> nan
+        0       -inf    +inf            nan---------------------------------|
+        0       -inf    -inf            nan---------------------------------|
+
+        Тесты
+        0 inf 5       -> x = -0
+        0 inf -5      -> x = +0
+
+        0 -inf 5      -> x = +0
+        0 -inf -5     -> x = -0
+
+        0 inf inf     -> x = nan
+        0 inf -inf    -> x = nan
+        0 -inf inf    -> x = nan
+        0 -inf -inf   -> x = nan
+
+
+3. Квадратный случай: a конечный ненулевой
+
+    a                  b        c        result
+    ------------------------------------------------
+    finite_nonzero     finite   finite   обычный solver
+
+    
+    a конечный ненулевой, b = +inf, c конечный
+
+        D = (+inf)^2 - finite = +inf
+        sqrt(D) = +inf
+        q = -0.5 * (+inf + +inf) = -inf
+        x1 = q / a = -inf / a
+        x2 = c / q = c / -inf = signed zero
+
+        a       b       c finite     x1              x2
+    -------------------------------------------------------
+        F+      +inf    finite       -inf            signed zero
+        F-      +inf    finite       +inf            signed zero
+        
+        Тесты
+        1 inf 2      -> x1 = -inf, x2 = -0
+        1 inf -2     -> x1 = -inf, x2 = +0
+
+        -1 inf 2     -> x1 = +inf, x2 = -0
+        -1 inf -2    -> x1 = +inf, x2 = +0
+
+
+
+    a конечный ненулевой, b = -inf, c конечный
+
+        D = (-inf)^2 - finite = +inf
+        sqrt(D) = +inf
+        q = -0.5 * (-inf - +inf) = +inf
+        x1 = q / a = +inf / a
+        x2 = c / q = c / +inf = signed zero
+
+        D = (-inf)^2 - finite = +inf
+        sqrt(D) = +inf
+        q = -0.5 * (-inf - +inf) = +inf
+        x1 = q / a = +inf / a
+        x2 = c / q = c / +inf = signed zero
+
+        a       b       c finite     x1              x2
+    -------------------------------------------------------
+        F+      -inf    finite       +inf            signed zero
+        F-      -inf    finite       -inf            signed zero
+
+        Тесты
+        1 -inf 2      -> x1 = +inf, x2 = +0
+        1 -inf -2     -> x1 = +inf, x2 = -0
+
+        -1 -inf 2     -> x1 = -inf, x2 = +0
+        -1 -inf -2    -> x1 = -inf, x2 = -0
+
+
+    a конечный ненулевой, b конечный, c = ±inf
+        a и c одного знака
+
+        a*c = +inf
+        4ac = +inf
+        D = finite - +inf = -inf
+
+        real = -b / (2a)
+        imag = sqrt(+inf) / (2a)    
+
+        a       b finite       c           result
+---------------------------------------------------------------
+        F+      finite         +inf        complex: real finite, imag +inf
+        F-      finite         -inf        complex: real finite, imag -inf
+
+        Тесты
+        1 2 inf       -> complex, real finite, imag +inf
+        1 -2 inf      -> complex, real finite, imag +inf
+
+        -1 2 -inf     -> complex, real finite, imag -inf
+        -1 -2 -inf    -> complex, real finite, imag -inf
+    
+    a и c разных знаков
+        a*c = -inf
+        4ac = -inf
+        D = finite - (-inf) = +inf
+        sqrt(D) = +inf
+
+        b >= 0: q = -inf
+        b < 0:  q = +inf
+
+        x1 = q / a
+        x2 = c / q = inf / inf = nan
+
+
+        a       b             c          x1              x2
+    ----------------------------------------------------------
+        F+      b >= 0        -inf       -inf            nan
+        F+      b < 0         -inf       +inf            nan
+
+        F-      b >= 0        +inf       +inf            nan
+        F-      b < 0         +inf       -inf            nan
+
+        Тесты
+        1 2 -inf      -> x1 = -inf, x2 = nan
+        1 -2 -inf     -> x1 = +inf, x2 = nan
+
+        -1 2 inf      -> x1 = +inf, x2 = nan
+        -1 -2 inf     -> x1 = -inf, x2 = nan
+
+    a конечный ненулевой, b = ±inf, c = ±inf
+
+        a и c одного знака
+
+            b^2 = +inf
+            4ac = +inf
+            D = +inf - +inf = nan
+
+            x1 = nan
+            x2 = nan
+
+            1 inf inf       -> nan, nan
+            1 -inf inf      -> nan, nan
+
+            -1 inf -inf     -> nan, nan
+            -1 -inf -inf    -> nan, nan
+
+        a и c разных знаков
+
+            b^2 = +inf
+            4ac = -inf
+            D = +inf - (-inf) = +inf
+
+            Тогда sqrt(D) = +inf
+
+            Если b = +inf:
+                q = -inf
+                x1 = -inf / a
+                x2 = c / -inf = inf / inf = nan
+
+            Если b = -inf:
+                q = +inf
+                x1 = +inf / a
+                x2 = c / +inf = inf / inf = nan
+
+        a       b       c           x1              x2
+    ----------------------------------------------------
+        F+      +inf    -inf        -inf            nan
+        F+      -inf    -inf        +inf            nan
+
+        F-      +inf    +inf        +inf            nan
+        F-      -inf    +inf        -inf            nan
+        
+        Тесты
+        1 inf -inf       -> x1 = -inf, x2 = nan
+        1 -inf -inf      -> x1 = +inf, x2 = nan
+
+        -1 inf inf       -> x1 = +inf, x2 = nan
+        -1 -inf inf      -> x1 = -inf, x2 = nan
+
+4. Квадратный случай: a = +inf или a = -inf
+
+    D = b^2 - 4ac
+    denominator = 2a = ±inf
+
+    Важно: если a = inf и c = 0, то:
+        a*c = inf * 0 = nan
+        D = nan
+
+    a = ±inf, c = 0
+        a       b                  c       result
+    ------------------------------------------------
+        +inf    anything non-nan    0       nan, nan
+        -inf    anything non-nan    0       nan, nan
+
+        Тесты
+        inf 1 0       -> nan, nan
+        inf inf 0     -> nan, nan
+        -inf 1 0      -> nan, nan
+        -inf -inf 0   -> nan, nan
+
+    a = ±inf, c конечный ненулевой, a и c одного знака
+        a = +inf, c = positive
+        a = -inf, c = negative
+
+        a*c = +inf
+        4ac = +inf
+
+        Если b конечный:
+
+            D = finite - +inf = -inf
+
+            Формально это комплексная ветка, но:
+
+            imag = sqrt(+inf) / ±inf = inf / inf = nan
+
+        Если b бесконечный:
+
+            b^2 = +inf
+            D = +inf - +inf = nan
+
+            Итог практически один:
+
+            x1 = nan
+            x2 = nan
+
+            Тесты
+            inf 1 2        -> nan, nan
+            inf -1 2       -> nan, nan
+            inf inf 2      -> nan, nan
+            inf -inf 2     -> nan, nan
+
+            -inf 1 -2      -> nan, nan
+            -inf -1 -2     -> nan, nan
+            -inf inf -2    -> nan, nan
+            -inf -inf -2   -> nan, nan
+
+        a = ±inf, c конечный ненулевой, a и c разных знаков
+
+            a = +inf, c = negative
+            a = -inf, c = positive
+
+            Тогда:
+
+            a*c = -inf
+            4ac = -inf
+            D = b^2 - (-inf) = +inf
+            sqrt(D) = +inf
+
+            Но:
+
+            x1 = q / a = inf / inf = nan
+            x2 = c / q = finite / inf = signed zero
+
+            То есть формульный результат:
+
+            x1 = nan
+            x2 = signed zero
+
+            Знак x2 зависит от c и от знака q.
+
+            b >= 0 or b = +inf: q = -inf
+            b < 0  or b = -inf: q = +inf
+
+            Тесты
+            inf 1 -2        -> x1 = nan, x2 = +0
+            inf -1 -2       -> x1 = nan, x2 = -0
+            inf inf -2      -> x1 = nan, x2 = +0
+            inf -inf -2     -> x1 = nan, x2 = -0
+
+            -inf 1 2        -> x1 = nan, x2 = -0
+            -inf -1 2       -> x1 = nan, x2 = +0
+            -inf inf 2      -> x1 = nan, x2 = -0
+            -inf -inf 2     -> x1 = nan, x2 = +0
+
+            a = ±inf, c = ±inf
+
+            Если a и c одного знака:
+
+                a*c = +inf
+                при конечном b: D = finite - inf = -inf, но complex imag = inf / inf = nan;
+                при бесконечном b: D = inf - inf = nan.
+
+            Если a и c разных знаков:
+
+                a*c = -inf
+                D = b^2 - (-inf) = +inf
+
+                Но дальше:
+
+                x1 = inf / inf = nan
+                x2 = inf / inf = nan
+
+
+            a       b                  c       result
+            ------------------------------------------------
+            +inf    anything non-nan    +inf    nan, nan
+            +inf    anything non-nan    -inf    nan, nan
+            -inf    anything non-nan    +inf    nan, nan
+            -inf    anything non-nan    -inf    nan, nan
+
+            Тесты
+            inf 1 inf        -> nan, nan
+            inf 1 -inf       -> nan, nan
+            inf inf inf      -> nan, nan
+            inf inf -inf     -> nan, nan
+
+            -inf 1 inf       -> nan, nan
+            -inf 1 -inf      -> nan, nan
+            -inf -inf inf    -> nan, nan
+            -inf -inf -inf   -> nan, nan
+
+
+
+
+
+Итог
+
+a class        b class        c class                   result
+---------------------------------------------------------------------------------------
+nan            any            any                       nan, nan
+any            nan            any                       nan, nan
+any            any            nan                       nan, nan
+
+finite         finite         finite                    обычный solver
+
+0              0              0                         INFINITE_SOLUTION
+0              0              nonzero/inf               NO_SOLUTION
+0              finite_nonzero finite                    LINEAR: x = -c / b
+0              finite_nonzero inf                       LINEAR: x = ±inf
+0              inf            finite                    LINEAR: x = signed zero
+0              inf            inf                       LINEAR: x = nan
+
+finite_nonzero finite         inf same sign as a        complex infinity roots
+finite_nonzero finite         inf opposite sign a       one infinite root, one nan
+
+finite_nonzero +inf           finite                    one infinite root, one signed zero
+finite_nonzero -inf           finite                    one infinite root, one signed zero
+
+finite_nonzero inf            inf same sign as a        nan, nan
+finite_nonzero inf            inf opposite sign a       one infinite root, one nan
+
++inf/-inf      any            0                         nan, nan
++inf/-inf      any            finite same sign as a     nan, nan
++inf/-inf      any            finite opposite sign a    nan, signed zero
++inf/-inf      any            inf                       nan, nan
