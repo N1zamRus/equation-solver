@@ -1,7 +1,18 @@
 from core.BigFloat import BigFloat, get_sign, bigfloat_string
 from decimal import Decimal
+from enum import Enum, auto
 
 NULL = BigFloat(1, [0], 0)
+
+
+class SolutionState(Enum):
+    INFINITE_SOLUTION = auto()
+    NO_SOLUTION = auto()
+    LINEAR = auto()
+    COMPLEX_ROOTS = auto()
+    SAME_ROOTS = auto()
+    DIFFERENT_ROOTS = auto()
+
 
 class Coefs:
     def __init__(self, a: BigFloat | Decimal = NULL, b: BigFloat | Decimal = NULL, c: BigFloat | Decimal = NULL) -> None:

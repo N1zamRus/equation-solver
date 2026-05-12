@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 
 from core.BigFloat import create_BigFloat
-from interpreter_utility import (
+from input.interpreter_utility import (
     ParseResult,
     ShowErrorMassege,
     is_digit,
@@ -224,10 +224,6 @@ def parse_float_token(source: str) -> ParseResult:
         return ParseResult(False, result.pos, f"Некорректный символ после float: {bad_char} в токене {source}",)
 
     return result
-
-
-def is_number(source: str) -> bool:
-    return parse_float_token(source).ok
 
 
 def is_number(source: str) -> bool:

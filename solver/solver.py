@@ -1,10 +1,20 @@
-from enum import Enum, auto
+from solver.models import (
+    Coefs,
+    ComplexBigFloat,
+    Solution,
+    SolutionState,
+    get_a,
+    get_b,
+    get_c,
+    get_x1,
+    get_x2,
+    get_solve_type,
+)
+from solver.special_solver import special_solution_calc
 
-from solver.models import Coefs, ComplexBigFloat, complex_bigfloat_string, Solution, get_a, get_b, get_c, get_x1, get_x2, get_solve_type
+from core.Special_values import is_special_value
 from core.BigFloat import BigFloat, is_zero, get_sign, bigfloat_string
 from core.BigFloat_math import Add, Sub, Mul, short_Mul, Div, Sqrt
-from core.Special_values import has_special_coefs
-from solver.special_solver import special_solution_calc
 
 
 ZERO = BigFloat(1, [0], 0)
@@ -13,17 +23,9 @@ FOUR = BigFloat(1, [4], 0)
 
 WORK_PRECISION = 2500
 
-class SolutionState(Enum):
-    INFINITE_SOLUTION = auto()
-    NO_SOLUTION = auto()
-    LINEAR = auto()
-    COMPLEX_ROOTS = auto()
-    SAME_ROOTS = auto()
-    DIFFERENT_ROOTS = auto()
 
 def square_b(b: BigFloat) -> BigFloat:
     return Mul(b, b, WORK_PRECISION)
-
 
 def calc_4ac(a: BigFloat, c: BigFloat) -> BigFloat:
     return Mul(Mul(FOUR, a, WORK_PRECISION), c, WORK_PRECISION)
@@ -123,22 +125,21 @@ def quadratic_solve(coefs: Coefs) -> Solution:
         x2=root2,
     )
 
+def has_special_value(coefs: Coefs) -> bool:
+    return (
+        is_special_value(get_a(coefs))
+        or is_special_value(get_b(coefs))
+        or is_special_value(get_c(coefs))
+    )
 
 
 def solution_calc(coefs: Coefs) -> Solution:
-    if has_special_coefs(coefs):
+    if has_special_value(coefs):
         return special_solution_calc(coefs)
-
     if is_linear(coefs):
         return linear_solve(coefs)
 
     return quadratic_solve(coefs)
-
-
-def value_str(value):
-    if isinstance(value, ComplexBigFloat):
-        return complex_bigfloat_string(value)
-    return bigfloat_string(value)
 
 
 def output_solution(solution: Solution):
@@ -147,8 +148,35 @@ def output_solution(solution: Solution):
     if solution.solv_type == SolutionState.SAME_ROOTS:
         print(f"x = {value_str(get_x1(solution))}")
         return
-
     if solution.x1 is not None:
         print(f"x1 = {value_str(get_x1(solution))}", end=" ")
     if solution.x2 is not None:
         print(f"x2 = {value_str(get_x2(solution))}")
+
+
+def value_str(value: ComplexBigFloat | BigFloat):
+    if isinstance(value, ComplexBigFloat):
+        return complex_string(value)
+    elif isinstance(value, BigFloat):
+        return bigfloat_string(value)
+
+    return str(value)
+
+def complex_string(value: ComplexBigFloat):
+    real = value_str(value.real)
+
+    imag_value = value.imag
+    imag_abs = abs(imag_value)
+    imag = value_str(imag_abs)
+
+    if isinstance(imag_value, BigFloat):
+        sign = get_sign(imag_value)
+    elif hasattr(imag_value, "sign"):
+        sign = imag_value.sign
+    else:
+        sign = 1
+
+    if sign < 0:
+        return f"{real} - {imag}i"
+
+    return f"{real} + {imag}i"
