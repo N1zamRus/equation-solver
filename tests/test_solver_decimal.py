@@ -8,12 +8,7 @@ from core.BigFloat import create_BigFloat
 from solver.models import Coefs
 from solver.solver import solution_calc as bigfloat_solution_calc
 from solver.decimal_solver import solution_calc as decimal_solution_calc
-from tests.test_utility import (
-    make_str_number,
-    to_decimal,
-    solution_to_roots,
-    assert_roots_equal,
-)
+from tests.test_utility import make_str_number, to_decimal
 
 
 SOLVER_TIMES = []
@@ -65,13 +60,13 @@ def make_random_coefficients(rng: Random, count_test, length):
     ('1', '0', '-1'),
 ])
 def test_solver_edge_cases(a, b, c):
-    actual = solution_to_roots(bigfloat_solution_calc(Coefs(
-        create_BigFloat(a), create_BigFloat(b), create_BigFloat(c),)))
+    actual = bigfloat_solution_calc(Coefs(
+        create_BigFloat(a), create_BigFloat(b), create_BigFloat(c),))
 
-    expected = solution_to_roots(decimal_solution_calc(Coefs(
-        to_decimal(a), to_decimal(b), to_decimal(c),)))
+    expected = decimal_solution_calc(Coefs(
+        to_decimal(a), to_decimal(b), to_decimal(c),))
 
-    assert_roots_equal(actual, expected)
+    assert actual == expected
 
 
 @pytest.mark.parametrize(
@@ -80,16 +75,16 @@ def test_solver_edge_cases(a, b, c):
 )
 def test_solver_quadratic_with_decimal(a, b, c):
     start = perf_counter()
-    actual = solution_to_roots(bigfloat_solution_calc(Coefs(
-        create_BigFloat(a), create_BigFloat(b), create_BigFloat(c),)))
+    actual = bigfloat_solution_calc(Coefs(
+        create_BigFloat(a), create_BigFloat(b), create_BigFloat(c),))
     end = perf_counter()
 
     SOLVER_TIMES.append(end - start)
 
-    expected = solution_to_roots(decimal_solution_calc(Coefs(
-        to_decimal(a), to_decimal(b), to_decimal(c),)))
+    expected = decimal_solution_calc(Coefs(
+        to_decimal(a), to_decimal(b), to_decimal(c),))
 
-    assert_roots_equal(actual, expected)
+    assert actual == expected
 
 
 @pytest.fixture(scope='module', autouse=True)

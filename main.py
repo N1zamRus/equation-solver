@@ -1,8 +1,8 @@
 from input.interpreter import ThreeBigFloats
 from solver.models import Coefs
-from solver.solver import solution_calc, output_solution, has_special_value
+from solver.solver import solution_calc, output_solution
 from solver.decimal_solver import solution_calc as decimal_solution_calc
-from tests.test_utility import bigfloat_decimal, solution_to_roots, roots_match
+from tests.test_utility import to_decimal
 
 
 def read_coefficients():
@@ -22,16 +22,12 @@ def main():
     solution = solution_calc(coefs)
     output_solution(solution)
 
-    if has_special_value(coefs):
-        print("Проверка через Decimal пропущена для special values")
-        return
-
-    actual = solution_to_roots(solution)
-    expected = solution_to_roots(decimal_solution_calc(Coefs(
-        bigfloat_decimal(a), bigfloat_decimal(b), bigfloat_decimal(c),
-    )))
-    print("решение верно" if roots_match(actual, expected) else "решение неверно")
+    expected = decimal_solution_calc(Coefs(
+        to_decimal(a), to_decimal(b), to_decimal(c),
+    ))
+    print("решение верно" if solution == expected else "решение неверно")
 
 
 if __name__ == "__main__":
     main()
+    

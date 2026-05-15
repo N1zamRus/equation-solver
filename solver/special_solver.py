@@ -151,7 +151,6 @@ def quadratic_solve(coefs: Coefs) -> Solution:
 
     return Solution(solv_type=SolutionState.DIFFERENT_ROOTS, x1=root1, x2=root2,)
 
-
 def special_solution_calc(coefs: Coefs) -> Solution:
     if has_nan_coefs(coefs):
         return nan_roots_solution()

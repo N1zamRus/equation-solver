@@ -11,10 +11,6 @@ ZERO = BigFloat(1, [0], 0)
 NumberValue = Nan | BigFloat | Infinity
 
 
-def is_finite_value(value: NumberValue):
-    return isinstance(value, BigFloat)
-
-
 def is_zero_value(value: NumberValue):
     if isinstance(value, BigFloat):
         return is_zero(value)
@@ -41,19 +37,6 @@ def special_is_zero(value: NumberValue):
     return is_zero(value)
 
 
-def special_get_sign(value: NumberValue):
-    if is_nan(value):
-        return 0
-
-    if is_infinity(value):
-        return value.sign
-
-    if is_zero(value):
-        return 1
-
-    return get_sign(value)
-
-
 def special_neg(value: NumberValue):
     if is_nan(value):
         return Nan()
@@ -62,16 +45,6 @@ def special_neg(value: NumberValue):
         return Infinity(-value.sign)
 
     return -value
-
-
-def special_abs(value: NumberValue):
-    if is_nan(value):
-        return Nan()
-
-    if is_infinity(value):
-        return Infinity(1)
-
-    return abs(value)
 
 
 def special_add(left: NumberValue, right: NumberValue):
@@ -198,11 +171,6 @@ def special_eq(left: NumberValue, right: NumberValue):
     return left == right
 
 
-def special_ne(left: NumberValue, right: NumberValue):
-    """self != other"""
-    return not special_eq(left, right)
-
-
 def special_lt(left: NumberValue, right: NumberValue):
     """self < other"""
     if is_nan(left) or is_nan(right):
@@ -218,40 +186,6 @@ def special_lt(left: NumberValue, right: NumberValue):
         return right.sign > 0
 
     return left < right
-
-
-def special_le(left: NumberValue, right: NumberValue):
-    """self <= other"""
-    if is_nan(left) or is_nan(right):
-        return False
-
-    if is_infinity(left) and is_infinity(right):
-        return left.sign <= right.sign
-
-    if is_infinity(left):
-        return left.sign < 0
-
-    if is_infinity(right):
-        return right.sign > 0
-
-    return left <= right
-
-
-def special_gt(left: NumberValue, right: NumberValue):
-    """self > other"""
-    if is_nan(left) or is_nan(right):
-        return False
-
-    if is_infinity(left) and is_infinity(right):
-        return left.sign > right.sign
-
-    if is_infinity(left):
-        return left.sign > 0
-
-    if is_infinity(right):
-        return right.sign < 0
-
-    return left > right
 
 
 def special_ge(left: NumberValue, right: NumberValue):

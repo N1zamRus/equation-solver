@@ -92,10 +92,12 @@ def create_BigFloat(num: str) -> BigFloat:
 
     sign, num = parse_sign(num)
 
-    if num == "nan":
+    lower = num.lower()
+
+    if lower == "nan":
         return Nan()
 
-    if num in ("inf", "Infinity", "infinity"):
+    if lower in ("inf", "infinity"):
         return Infinity(sign)
     
     num, exp_from_e = parse_exponent(num)

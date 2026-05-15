@@ -13,8 +13,6 @@ from input.interpreter_utility import (
     is_without_zero_digit,
     is_zero,
     parse_digit_parts,
-    parse_full_token,
-    parse_literal,
 )
 
 
@@ -135,10 +133,12 @@ class Number(Node):
 
 
 class Nan(Node):
-    """nan = "nan"""
+    """nan = "nan" | "NaN" | "NAN"""
 
     def interpret(self, source: str, pos: int = 0) -> ParseResult:
-        return parse_literal(source, pos, "nan")
+        if source[pos:].lower().startswith("nan"):
+            return ParseResult(True, pos + 3)
+        return ParseResult(False, pos)
 
 
 class Infinity(Node):
@@ -147,12 +147,13 @@ class Infinity(Node):
     def interpret(self, source: str, pos: int = 0) -> ParseResult:
         start = pos
 
-        for literal in ("Infinity", "infinity", "inf"):
-            result = parse_literal(source, start, literal)
-            if result.ok:
-                return result
-
+        fragment = source[pos:].lower()
+        for special_value in ("infinity", "inf"):
+            if fragment.find(special_value) == 0:
+                return ParseResult(True, pos + len(special_value))
+            
         return ParseResult(False, start)
+
 
 
 class AbsValue(Node):

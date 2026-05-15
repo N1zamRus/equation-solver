@@ -1,4 +1,6 @@
 from core.BigFloat import BigFloat, get_sign, bigfloat_string
+from core.Special_values import Nan, Infinity
+from tests.test_utility import to_decimal
 from decimal import Decimal
 from enum import Enum, auto
 
@@ -41,6 +43,34 @@ class Solution:
         self.x1 = x1
         self.x2 = x2
 
+    def __eq__(self, other: "Solution"):
+        if not same_solv_type(self, other):
+            return False
+        
+        if is_special_solv(self) or is_special_solv(other):
+            return True
+        
+        if self.solv_type == SolutionState.COMPLEX_ROOTS:
+            return complex_eq(self.x1, other.x1) and complex_eq(self.x2, other.x2)
+
+
+        self_roots = pack_roots(self)
+        other_roots = pack_roots(other)
+        
+        self_strs = sorted(root_to_str(r) for r in self_roots)
+        other_strs = sorted(root_to_str(r) for r in other_roots)
+
+        return self_strs == other_strs 
+
+def same_solv_type(self: Solution, other: Solution):
+    return self.solv_type == other.solv_type
+
+def is_special_solv(self: Solution):
+    return self.solv_type in (SolutionState.INFINITE_SOLUTION, SolutionState.NO_SOLUTION)
+
+def pack_roots(self: Solution):
+    return [x for x in (self.x1,  self.x2) if x is not None]
+
 
 def get_x1(solution: Solution):
     return solution.x1
@@ -65,15 +95,6 @@ class ComplexDecimal:
         self.imag = imag
 
 
-def complex_bigfloat_string(value: ComplexBigFloat):
-    real = bigfloat_string(value.real)
-    imag = bigfloat_string(abs(value.imag))
-
-    if get_sign(value.imag) < 0:
-        return f"{real} - {imag}i"
-
-    return f"{real} + {imag}i"
-
 def complex_decimal_string(value: ComplexDecimal):
     real = str(value.real)
     imag = str(abs(value.imag))
@@ -90,3 +111,29 @@ def get_real(value: ComplexDecimal | ComplexBigFloat):
 
 def get_imag(value: ComplexDecimal | ComplexBigFloat):
     return value.imag
+
+def complex_eq(a: ComplexBigFloat | ComplexDecimal, b: ComplexBigFloat | ComplexDecimal) -> bool:
+    real_a = a.real
+    imag_a = a.imag
+    real_b = b.real
+    imag_b = b.imag
+
+    real_a_decimal = to_decimal(real_a)
+    imag_a_decimal = to_decimal(imag_a)
+    real_b_decimal = to_decimal(real_b)
+    imag_b_decimal = to_decimal(imag_b)
+
+    real_a_str = f'{real_a_decimal:.10010f}'[:10000]
+    imag_a_str = f'{imag_a_decimal:.10010f}'[:10000]
+    real_b_str = f'{real_b_decimal:.10010f}'[:10000]
+    imag_b_str = f'{imag_b_decimal:.10010f}'[:10000]
+
+    return real_a_str == real_b_str and imag_a_str == imag_b_str
+
+def root_to_str(root: BigFloat | Decimal | Nan | Infinity) -> str:
+    root_decimal = to_decimal(root)
+    if root_decimal.is_nan():
+        return "Nan"
+    if root_decimal.is_infinite():
+        return str(root_decimal)
+    return f'{root_decimal:.10010f}'[:10000]
