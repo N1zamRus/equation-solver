@@ -53,6 +53,8 @@ def to_decimal(value: str | Nan | Infinity | BigFloat) -> Decimal:
         return Decimal("Infinity") if value.sign > 0 else Decimal("-Infinity")
     if isinstance(value, BigFloat):
         return Decimal(bigfloat_string(value))
+    if isinstance(value, Decimal):
+        return Decimal("0") if value.is_zero() else value
     return Decimal(str(value).replace(",", "."))
 
 
