@@ -70,5 +70,6 @@ def main() -> None:
     save_to_file(regular_lines, timing_lines, error_lines)
 
 if __name__ == "__main__":
-    main()
+    import cProfile
+    cProfile.run('main()')
     
