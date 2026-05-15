@@ -25,8 +25,8 @@ getcontext().Emin = MIN_EMIN
 def make_signed_number(rng: Random, length):
     value = make_str_number(rng, length)
 
-    if value != '0' and rng.choice([True, False]):
-        return '-' + value
+    if value != "0" and rng.choice([True, False]):
+        return "-" + value
 
     return value
 
@@ -47,17 +47,17 @@ def make_random_coefficients(rng: Random, count_test, length):
     return coefficients
 
 
-@pytest.mark.parametrize('a, b, c', [
-    ('1', '-3', '2'),
-    ('1', '2', '1'),
-    ('1', '0', '1'),
-    ('1', '0', '-4'),
-    ('1', '1', '0'),
-    ('2', '4', '2'),
-    ('1', '-2', '-3'),
-    ('3', '0', '0'),
-    ('1', '-1', '0'),
-    ('1', '0', '-1'),
+@pytest.mark.parametrize("a, b, c", [
+    ("1", "-3", "2"),
+    ("1", "2", "1"),
+    ("1", "0", "1"),
+    ("1", "0", "-4"),
+    ("1", "1", "0"),
+    ("2", "4", "2"),
+    ("1", "-2", "-3"),
+    ("3", "0", "0"),
+    ("1", "-1", "0"),
+    ("1", "0", "-1"),
 ])
 def test_solver_edge_cases(a, b, c):
     actual = bigfloat_solution_calc(Coefs(
@@ -70,7 +70,7 @@ def test_solver_edge_cases(a, b, c):
 
 
 @pytest.mark.parametrize(
-    'a, b, c',
+    "a, b, c",
     make_random_coefficients(Random(RANDOM_SEED), RANDOM_COEFS_COUNT, RANDOM_NUMBER_LENGTH),
 )
 def test_solver_quadratic_with_decimal(a, b, c):
@@ -87,10 +87,10 @@ def test_solver_quadratic_with_decimal(a, b, c):
     assert actual == expected
 
 
-@pytest.fixture(scope='module', autouse=True)
+@pytest.fixture(scope="module", autouse=True)
 def print_average_time():
     yield
 
     if SOLVER_TIMES:
         avg_solver = sum(SOLVER_TIMES) / len(SOLVER_TIMES)
-        print(f'\nСреднее время Solver: {avg_solver:.8f} сек')
+        print(f"\nСреднее время Solver: {avg_solver:.8f} сек")

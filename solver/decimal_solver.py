@@ -17,9 +17,9 @@ from solver.models import (
 )
 
 
-ZERO = Decimal('0')
-TWO = Decimal('2')
-FOUR = Decimal('4')
+ZERO = Decimal("0")
+TWO = Decimal("2")
+FOUR = Decimal("4")
 
 getcontext().traps[InvalidOperation] = False
 getcontext().traps[DivisionByZero] = False
@@ -92,8 +92,8 @@ def calc_complex(coefs: Coefs, discriminant: Decimal) -> Solution:
 
 def calc_q(b: Decimal, sqrt_d: Decimal) -> Decimal:
     if b >= ZERO:
-        return Decimal('-0.5') * (b + sqrt_d)
-    return Decimal('-0.5') * (b - sqrt_d)
+        return Decimal("-0.5") * (b + sqrt_d)
+    return Decimal("-0.5") * (b - sqrt_d)
 
 
 def normalize_zero(value: Decimal) -> Decimal:
@@ -119,8 +119,8 @@ def quadratic_solve(coefs: Coefs) -> Solution:
 
     if discriminant.is_nan():
         return Solution(solv_type=SolutionState.DIFFERENT_ROOTS,
-                        x1=Decimal('NaN'),
-                        x2=Decimal('NaN')
+                        x1=Decimal("NaN"),
+                        x2=Decimal("NaN")
         )
 
     if discriminant < ZERO:
@@ -142,8 +142,8 @@ def solution_calc(coefs: Coefs) -> Solution:
     a, b, c = get_a(coefs), get_b(coefs), get_c(coefs)
     if a.is_nan() or b.is_nan() or c.is_nan():
         return Solution(solv_type=SolutionState.DIFFERENT_ROOTS,
-                        x1=Decimal('NaN'),
-                        x2=Decimal('NaN')
+                        x1=Decimal("NaN"),
+                        x2=Decimal("NaN")
         )
     
     if is_linear(coefs):
@@ -158,13 +158,13 @@ def value_str(value) -> str:
 
 
 def output_solution(solution: Solution) -> None:
-    print(get_solve_type(solution), end=': ')
+    print(get_solve_type(solution), end=": ")
 
     if solution.solv_type == SolutionState.SAME_ROOTS:
-        print(f'x = {value_str(get_x1(solution))}')
+        print(f"x = {value_str(get_x1(solution))}")
         return
 
     if solution.x1 is not None:
-        print(f'x1 = {value_str(get_x1(solution))}', end=' ')
+        print(f"x1 = {value_str(get_x1(solution))}", end=" ")
     if solution.x2 is not None:
-        print(f'x2 = {value_str(get_x2(solution))}')
+        print(f"x2 = {value_str(get_x2(solution))}")

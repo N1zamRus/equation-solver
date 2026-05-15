@@ -9,6 +9,8 @@ from solver.models import (
     get_x1,
     get_x2,
     get_solve_type,
+    get_real,
+    get_imag,
 )
 from solver.special_solver import special_solution_calc
 
@@ -163,9 +165,9 @@ def value_str(value: ComplexBigFloat | BigFloat):
     return str(value)
 
 def complex_string(value: ComplexBigFloat):
-    real = value_str(value.real)
+    real = value_str(get_real(value))
 
-    imag_value = value.imag
+    imag_value = get_imag(value)
     imag_abs = abs(imag_value)
     imag = value_str(imag_abs)
 

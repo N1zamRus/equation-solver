@@ -95,16 +95,6 @@ class ComplexDecimal:
         self.imag = imag
 
 
-def complex_decimal_string(value: ComplexDecimal):
-    real = str(value.real)
-    imag = str(abs(value.imag))
-
-    if value.imag < Decimal('0'):
-        return f'{real} - {imag}i'
-
-    return f'{real} + {imag}i'
-
-
 def get_real(value: ComplexDecimal | ComplexBigFloat):
     return value.real
 
@@ -112,21 +102,31 @@ def get_real(value: ComplexDecimal | ComplexBigFloat):
 def get_imag(value: ComplexDecimal | ComplexBigFloat):
     return value.imag
 
+
+def complex_decimal_string(value: ComplexDecimal):
+    real = str(get_real(value))
+    imag = str(abs(get_imag(value)))
+
+    if get_imag(value) < Decimal("0"):
+        return f"{real} - {imag}i"
+
+    return f"{real} + {imag}i"
+
 def complex_eq(a: ComplexBigFloat | ComplexDecimal, b: ComplexBigFloat | ComplexDecimal) -> bool:
-    real_a = a.real
-    imag_a = a.imag
-    real_b = b.real
-    imag_b = b.imag
+    real_a = get_real(a)
+    imag_a = get_imag(a)
+    real_b = get_real(b)
+    imag_b = get_imag(b)
 
     real_a_decimal = to_decimal(real_a)
     imag_a_decimal = to_decimal(imag_a)
     real_b_decimal = to_decimal(real_b)
     imag_b_decimal = to_decimal(imag_b)
 
-    real_a_str = f'{real_a_decimal:.10010f}'[:10000]
-    imag_a_str = f'{imag_a_decimal:.10010f}'[:10000]
-    real_b_str = f'{real_b_decimal:.10010f}'[:10000]
-    imag_b_str = f'{imag_b_decimal:.10010f}'[:10000]
+    real_a_str = f"{real_a_decimal:.10010f}"[:10000]
+    imag_a_str = f"{imag_a_decimal:.10010f}"[:10000]
+    real_b_str = f"{real_b_decimal:.10010f}"[:10000]
+    imag_b_str = f"{imag_b_decimal:.10010f}"[:10000]
 
     return real_a_str == real_b_str and imag_a_str == imag_b_str
 
@@ -136,4 +136,4 @@ def root_to_str(root: BigFloat | Decimal | Nan | Infinity) -> str:
         return "Nan"
     if root_decimal.is_infinite():
         return str(root_decimal)
-    return f'{root_decimal:.10010f}'[:10000]
+    return f"{root_decimal:.10010f}"[:10000]

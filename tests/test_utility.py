@@ -48,9 +48,9 @@ def make_str_number(rng: Random, length: int) -> str:
 
 def to_decimal(value: str | Nan | Infinity | BigFloat) -> Decimal:
     if is_nan(value):
-        return Decimal('NaN')
+        return Decimal("NaN")
     if is_infinity(value):
-        return Decimal('Infinity') if value.sign > 0 else Decimal('-Infinity')
+        return Decimal("Infinity") if value.sign > 0 else Decimal("-Infinity")
     if isinstance(value, BigFloat):
         return Decimal(bigfloat_string(value))
     return Decimal(str(value).replace(",", "."))
