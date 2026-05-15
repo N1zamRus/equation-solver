@@ -66,25 +66,31 @@ def unpack_fft(c_fft: list[complex], n: int) -> tuple[list[complex], list[comple
     A = (z + conj(z)) / 2
     B = (z - conj(z)) / 2i
     """
-    a_fft = []
-    b_fft = []
+    a_fft = [0] * n
+    b_fft = [0] * n
 
-    for k in range(n):
-        a_fft.append((c_fft[k] + c_fft[(n - k) % n].conjugate()) / 2)
-        b_fft.append((c_fft[k] - c_fft[(n - k) % n].conjugate()) / (2j))
+    c0 = c_fft[0].conjugate()
+    a_fft[0] = (c_fft[0] + c0) / 2
+    b_fft[0] = (c_fft[0] - c0) / (2j)
+
+    for k in range(1, n):
+        ck = c_fft[n - k].conjugate()
+        a_fft[k] = (c_fft[k] + ck) / 2
+        b_fft[k] = (c_fft[k] - ck) / (2j)
 
     return a_fft, b_fft
 
 
 def normalize_fft(c_blocks: list[complex], n: int) -> list[complex]:
+    inv_n = 1 / n
     for i in range(len(c_blocks)):
-        c_blocks[i] = c_blocks[i] / n
+        c_blocks[i] *= inv_n
     return c_blocks
 
 
 def round_coeffs(c_blocks: list[complex], n: int) -> list[int]:
-    coeffs = []
+    coeffs = [0] * n
     for i in range(n):
-        coeffs.append(round(c_blocks[i].real))
+        coeffs[i] = round(c_blocks[i].real)
     return coeffs
 

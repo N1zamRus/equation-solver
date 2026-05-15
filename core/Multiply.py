@@ -16,7 +16,6 @@ from core.Multiply_utility import (
     unpack_fft,
     normalize_fft,
     round_coeffs,
-    fft_butterfly,
     reverse_bits,
 )
 from decimal import getcontext, MAX_EMAX, MIN_EMIN
@@ -37,10 +36,14 @@ def FFT(a: list[complex], w_root: list[complex]) -> list[complex]:
 
     while length <= n:
         step = n // length
-        for start in range(0, n, length):
-            for j in range(0, length // 2):
-                w = w_root[j * step]
-                fft_butterfly(a, start + j, start + j + length // 2, w)
+        half = length // 2
+        for j in range(half):
+            w = w_root[j * step]
+            for i in range(j, n, length):
+                u = a[i]
+                v = a[i + half] * w
+                a[i] = u + v
+                a[i + half] = u - v
         length *= 2
 
     return a

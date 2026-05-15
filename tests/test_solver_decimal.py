@@ -13,7 +13,7 @@ from tests.test_utility import make_str_number, to_decimal
 
 SOLVER_TIMES = []
 
-RANDOM_COEFS_COUNT = 50
+RANDOM_COEFS_COUNT = 100
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 674765
 
