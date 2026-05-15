@@ -101,3 +101,83 @@ def multiply_blocks(blocks: list[int], multiplier: int) -> list[int]:
     for i in range(len(blocks)):
         blocks[i] *= abs(multiplier)
     return blocks
+
+KARATSUBA_LIMIT = 15
+
+
+def add_blocks(a: list[int], b: list[int]) -> list[int]:
+    length = max(len(a), len(b))
+    result = [0] * length
+    for i in range(len(a)):
+        result[i] += a[i]
+    for i in range(len(b)):
+        result[i] += b[i]
+    return result
+
+
+def sub_blocks(a: list[int], b: list[int]) -> list[int]:
+    length = max(len(a), len(b))
+    result = [0] * length
+    for i in range(len(a)):
+        result[i] += a[i]
+    for i in range(len(b)):
+        result[i] -= b[i]
+    return result
+
+
+def shift_blocks(blocks: list[int], n: int) -> list[int]:
+    return [0] * n + blocks
+
+
+def naive_mul_blocks(a: list[int], b: list[int]) -> list[int]:
+    if not a or not b:
+        return [0]
+    c = [0] * (len(a) + len(b) - 1)
+    for i in range(len(a)):
+        for j in range(len(b)):
+            c[i + j] += a[i] * b[j]
+    return c
+
+
+def calc_z(a_blocks: list[int], b_blocks: list[int]) -> list[int]:
+    if len(a_blocks) <= KARATSUBA_LIMIT or len(b_blocks) <= KARATSUBA_LIMIT:
+        return naive_mul_blocks(a_blocks, b_blocks)
+
+    mid = max(len(a_blocks), len(b_blocks)) // 2
+
+    a_low, a_high = a_blocks[:mid], a_blocks[mid:]
+    b_low, b_high = b_blocks[:mid], b_blocks[mid:]
+
+    z0 = calc_z(a_low, b_low)
+    z2 = calc_z(a_high, b_high)
+    z1 = sub_blocks(
+        calc_z(add_blocks(a_low, a_high), add_blocks(b_low, b_high)),
+        add_blocks(z0, z2),
+    )
+
+    result = add_blocks(z0, shift_blocks(z1, mid))
+    result = add_blocks(result, shift_blocks(z2, mid * 2))
+    return result
+
+
+def middle_mul(a: BigFloat, b: BigFloat) -> BigFloat:
+    a_blocks = get_blocks(a).copy()
+    b_blocks = get_blocks(b).copy()
+
+    result_blocks = calc_z(a_blocks, b_blocks)
+    result_blocks = make_carry(result_blocks)
+
+    return normalize(BigFloat(get_sign(a) * get_sign(b), result_blocks, get_exp10(a) + get_exp10(b)))
+
+
+FFT_THRESHOLD = 150
+
+
+def smart_mul(a: BigFloat, b: BigFloat, precision: int = 2026) -> BigFloat:
+    max_blocks = max(len(get_blocks(a)), len(get_blocks(b)))
+    if max_blocks < FFT_THRESHOLD:
+        result = middle_mul(a, b)
+        if precision != 0:
+            result = BigFloat_round(result, precision)
+        return result
+    return Mul(a, b, precision)

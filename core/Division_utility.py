@@ -34,10 +34,10 @@ def has_enough_blocks(x: "BigFloat", precision: int) -> bool:
 
 def newton_step(b_abs: "BigFloat", x: "BigFloat", current_blocks: int, work_precision: int) -> "BigFloat":
     from core.BigFloat import BigFloat, BigFloat_round
-    from core.Multiply import Mul
+    from core.Multiply import smart_mul
     from core.Subtraction import Sub
 
     TWO = BigFloat(1, [2], 0)
-    bx = Mul(BigFloat_round(b_abs, current_blocks + 10), x, work_precision)
+    bx = smart_mul(BigFloat_round(b_abs, current_blocks + 10), x, work_precision)
     right = Sub(TWO, bx)
-    return Mul(x, right, work_precision)
+    return smart_mul(x, right, work_precision)

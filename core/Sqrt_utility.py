@@ -24,18 +24,18 @@ def calc_x0_exp(k: int, scale: int) -> int:
 
 def calc_next_sqrt(a: "BigFloat", x_old: "BigFloat", work_precision: int) -> "BigFloat":
     from core.BigFloat import BigFloat, BigFloat_round, normalize
-    from core.Multiply import Mul, short_Mul
+    from core.Multiply import smart_mul, short_Mul
     from core.Subtraction import Sub
 
     THREE = BigFloat(1, [3], 0)
 
     a_work = BigFloat_round(a, work_precision)
 
-    qx = Mul(x_old, x_old, work_precision)
-    ax2 = Mul(a_work, qx, work_precision)
+    qx = smart_mul(x_old, x_old, work_precision)
+    ax2 = smart_mul(a_work, qx, work_precision)
 
     staple = Sub(THREE, ax2)
-    x_staple = Mul(x_old, staple, work_precision)
+    x_staple = smart_mul(x_old, staple, work_precision)
 
     x_new = short_Mul(x_staple, 5, -1)
     return BigFloat_round(normalize(x_new), work_precision)

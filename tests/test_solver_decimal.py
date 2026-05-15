@@ -13,9 +13,9 @@ from tests.test_utility import make_str_number, to_decimal
 
 SOLVER_TIMES = []
 
-RANDOM_COEFS_COUNT = 10
+RANDOM_COEFS_COUNT = 50
 RANDOM_NUMBER_LENGTH = 10000
-RANDOM_SEED = 5124383
+RANDOM_SEED = 674765
 
 getcontext().prec = 50000
 getcontext().Emax = MAX_EMAX
