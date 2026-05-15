@@ -1,9 +1,4 @@
-from __future__ import annotations
 from math import pi, cos, sin
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from core.BigFloat import BigFloat
 
 
 ROOTS_CACHE = {}

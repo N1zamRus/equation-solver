@@ -1,14 +1,13 @@
-from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from BigFloat import BigFloat
+    from core.BigFloat import BigFloat
 
 BASE_DIGITS = 5
 BASE = 10 ** BASE_DIGITS
 
 
-def get_mantiss(cls: BigFloat) -> str:
+def get_mantiss(cls: "BigFloat") -> str:
     if not cls.blocks:
         return "0"
 
@@ -20,7 +19,7 @@ def get_mantiss(cls: BigFloat) -> str:
     return "".join(parts)
 
 
-def bigfloat_string(num: BigFloat) -> str:
+def bigfloat_string(num: "BigFloat") -> str:
     output_line = get_mantiss(num)
     num_sign = "-" if num.sign == -1 and output_line != "0" else ""
     num_exp = num.exp10
@@ -109,7 +108,7 @@ def del_zeros(blocks: list[int]) -> list[int]:
     return blocks
 
 
-def compare_abs(a: BigFloat, b: BigFloat) -> int:
+def compare_abs(a: "BigFloat", b: "BigFloat") -> int:
     a_blocks = del_zeros(a.blocks)
     b_blocks = del_zeros(b.blocks)
 
@@ -127,7 +126,7 @@ def compare_abs(a: BigFloat, b: BigFloat) -> int:
     return 0
 
 
-def shift_exp(num: BigFloat, exp_diff: int) -> BigFloat:
+def shift_exp(num: "BigFloat", exp_diff: int) -> "BigFloat":
     from core.BigFloat import BigFloat
 
     if exp_diff <= 0:

@@ -1,4 +1,3 @@
-from __future__ import annotations
 from core.BigFloat_utility import (
     BASE,
     BASE_DIGITS,
@@ -34,28 +33,28 @@ class BigFloat:
     def __repr__(self) -> str:
         return bigfloat_string(self)
 
-    def __abs__(self) -> BigFloat:
+    def __abs__(self) -> "BigFloat":
         return BigFloat(sign=1, blocks=self.blocks, exp10=self.exp10)
 
-    def __neg__(self) -> BigFloat:
+    def __neg__(self) -> "BigFloat":
         return BigFloat(sign=-1 * self.sign, blocks=self.blocks, exp10=self.exp10)
 
-    def __eq__(self, other: BigFloat) -> bool:
+    def __eq__(self, other: "BigFloat") -> bool:
         return compare(self, other) == 0
 
-    def __ne__(self, other: BigFloat) -> bool:
+    def __ne__(self, other: "BigFloat") -> bool:
         return compare(self, other) != 0
 
-    def __lt__(self, other: BigFloat) -> bool:
+    def __lt__(self, other: "BigFloat") -> bool:
         return compare(self, other) < 0
 
-    def __le__(self, other: BigFloat) -> bool:
+    def __le__(self, other: "BigFloat") -> bool:
         return compare(self, other) <= 0
 
-    def __gt__(self, other: BigFloat) -> bool:
+    def __gt__(self, other: "BigFloat") -> bool:
         return compare(self, other) > 0
 
-    def __ge__(self, other: BigFloat) -> bool:
+    def __ge__(self, other: "BigFloat") -> bool:
         return compare(self, other) >= 0
 
 

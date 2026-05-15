@@ -94,7 +94,7 @@ def calc_imag(discriminant, denominator):
                                     WORK_PRECISION),
                                     denominator,
                                     WORK_PRECISION,
-                                    )
+    )
 
 
 def calc_complex(coefs: Coefs, discriminant) -> Solution:

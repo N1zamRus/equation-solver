@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from core.BigFloat import BigFloat, get_sign, is_zero
 from core.BigFloat_math import Add, Sub, Mul, short_Mul, Div, Sqrt
 from core.Special_values import Nan, Infinity, is_nan, is_infinity, is_special_value

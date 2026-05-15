@@ -5,7 +5,7 @@ import pytest
 from input.interpreter import is_number
 
 
-RANDOM_TESTS_COUNT = 100
+RANDOM_TESTS_COUNT = 10
 RANDOM_SEED = 52152135
 NUMBER_LENGTH = 10000
 

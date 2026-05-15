@@ -1,7 +1,5 @@
 from decimal import Decimal, getcontext, InvalidOperation, DivisionByZero
 
-from core.BigFloat import BigFloat, bigfloat_string
-from core.Special_values import Nan, Infinity, is_nan, is_infinity
 from solver.models import (
     Coefs,
     ComplexDecimal,

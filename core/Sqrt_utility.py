@@ -1,4 +1,3 @@
-from __future__ import annotations
 from math import floor
 from typing import TYPE_CHECKING
 
@@ -23,7 +22,7 @@ def calc_x0_mantissa(top: int, take_digits: int) -> tuple[int, int]:
 def calc_x0_exp(k: int, scale: int) -> int:
     return -k - scale // 2
 
-def calc_next_sqrt(a: BigFloat, x_old: BigFloat, work_precision: int) -> BigFloat:
+def calc_next_sqrt(a: "BigFloat", x_old: "BigFloat", work_precision: int) -> "BigFloat":
     from core.BigFloat import BigFloat, BigFloat_round, normalize
     from core.Multiply import Mul, short_Mul
     from core.Subtraction import Sub

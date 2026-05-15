@@ -1,4 +1,3 @@
-from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -28,12 +27,12 @@ def calc_work_precision(current_blocks: int, extra_blocks: int, max_work_precisi
     return min(current_blocks + extra_blocks, max_work_precision)
 
 
-def has_enough_blocks(x: BigFloat, precision: int) -> bool:
+def has_enough_blocks(x: "BigFloat", precision: int) -> bool:
     from core.BigFloat import get_blocks
     return len(get_blocks(x)) >= precision
 
 
-def newton_step(b_abs: BigFloat, x: BigFloat, current_blocks: int, work_precision: int) -> BigFloat:
+def newton_step(b_abs: "BigFloat", x: "BigFloat", current_blocks: int, work_precision: int) -> "BigFloat":
     from core.BigFloat import BigFloat, BigFloat_round
     from core.Multiply import Mul
     from core.Subtraction import Sub
