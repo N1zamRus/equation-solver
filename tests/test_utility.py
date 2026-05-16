@@ -1,6 +1,6 @@
 from random import Random, randint
 from decimal import Decimal
-from core.BigFloat import BigFloat, get_exp10, get_mantiss, get_sign, bigfloat_string
+from core.BigFloat import BigFloat, create_BigFloat, get_exp10, get_mantiss, get_sign, bigfloat_string
 from core.Special_values import (
     Nan,
     Infinity,
@@ -162,6 +162,16 @@ def bigfloat_decimal(value: BigFloat) -> Decimal:
     digits = tuple(int(digit) for digit in get_mantiss(value))
     exponent = get_exp10(value)
     return Decimal((sign, digits, exponent))
+
+
+def make_coefs_bigfloat(a: str, b: str, c: str):
+    from solver.models import Coefs
+    return Coefs(create_BigFloat(a), create_BigFloat(b), create_BigFloat(c))
+
+
+def make_coefs_decimal(a: str, b: str, c: str):
+    from solver.models import Coefs
+    return Coefs(to_decimal(a), to_decimal(b), to_decimal(c))
 
 
 def make_signed_random_pairs(rng: Random, count_test: int, length: int) -> list[tuple[str, str]]:

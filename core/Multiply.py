@@ -144,8 +144,8 @@ def calc_z(a_blocks: list[int], b_blocks: list[int]) -> list[int]:
 
     z0 = calc_z(a_low, b_low)
     z2 = calc_z(a_high, b_high)
-    z1 = sub_blocks(
-        calc_z(add_blocks(a_low, a_high), add_blocks(b_low, b_high)),
+    z1 = sub_blocks(calc_z(
+        add_blocks(a_low, a_high), add_blocks(b_low, b_high)),
         add_blocks(z0, z2),
     )
 
@@ -161,7 +161,12 @@ def middle_mul(a: BigFloat, b: BigFloat) -> BigFloat:
     result_blocks = calc_z(a_blocks, b_blocks)
     result_blocks = make_carry(result_blocks)
 
-    return normalize(BigFloat(get_sign(a) * get_sign(b), result_blocks, get_exp10(a) + get_exp10(b)))
+    return normalize(BigFloat(
+            get_sign(a) * get_sign(b), 
+            result_blocks, 
+            get_exp10(a) + get_exp10(b)
+        )
+    )
 
 
 def smart_mul(a: BigFloat, b: BigFloat, precision: int = 2026) -> BigFloat:
