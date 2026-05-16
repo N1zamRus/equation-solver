@@ -17,7 +17,7 @@ def run_pytest() -> subprocess.Popen:
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True,
-        encoding="utf-8",
+        encoding="utf-8", #cp1251
         bufsize=1,
     )
     return process

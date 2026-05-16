@@ -11,9 +11,9 @@ from tests.test_utility import make_str_number
 
 SQRT_TIMES = []
 
-RANDOM_VALUES_COUNT = 10
+RANDOM_VALUES_COUNT = 100
 RANDOM_NUMBER_LENGTH = 10000
-RANDOM_SEED = 52532
+RANDOM_SEED = 835683
 
 getcontext().prec = 50000
 getcontext().Emax = MAX_EMAX

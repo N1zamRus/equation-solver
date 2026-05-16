@@ -11,9 +11,9 @@ from tests.test_utility import make_signed_random_pairs, to_decimal, bigfloat_de
 
 SUB_TIMES = []
 
-RANDOM_PAIRS_COUNT = 10
+RANDOM_PAIRS_COUNT = 100
 RANDOM_NUMBER_LENGTH = 10000
-RANDOM_SEED = 52152
+RANDOM_SEED = 34568
 
 getcontext().prec = RANDOM_NUMBER_LENGTH * 2 + 10
 getcontext().Emax = MAX_EMAX

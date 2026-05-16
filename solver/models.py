@@ -1,11 +1,14 @@
 from core.BigFloat import BigFloat
 from core.Special_values import Nan, Infinity
 from tests.test_utility import to_decimal
-from decimal import Decimal
+from decimal import Decimal, getcontext, MAX_EMAX, MIN_EMIN
 from enum import Enum, auto
 
 NULL = BigFloat(1, [0], 0)
 
+getcontext().prec = 50000
+getcontext().Emax = MAX_EMAX
+getcontext().Emin = MIN_EMIN
 
 class SolutionState(Enum):
     INFINITE_SOLUTION = auto()

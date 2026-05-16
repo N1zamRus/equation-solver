@@ -6,8 +6,8 @@ from input.interpreter import is_number
 from tests.test_utility import make_random_numbers
 
 
-RANDOM_TESTS_COUNT = 10
-RANDOM_SEED = 52152135
+RANDOM_TESTS_COUNT = 100
+RANDOM_SEED = 412341
 NUMBER_LENGTH = 10000
 
 INTERPRETER_TIMES = []
