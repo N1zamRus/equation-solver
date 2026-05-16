@@ -18,7 +18,7 @@ from core.Multiply_utility import (
 )
 
 KARATSUBA_LIMIT = 15
-FFT_THRESHOLD = 150
+FFT_LIMIT = 150
 
 def FFT(a: list[complex], w_root: list[complex]) -> list[complex]:
     length = 2
@@ -171,7 +171,7 @@ def middle_mul(a: BigFloat, b: BigFloat) -> BigFloat:
 
 def smart_mul(a: BigFloat, b: BigFloat, precision: int = 2026) -> BigFloat:
     max_blocks = max(len(get_blocks(a)), len(get_blocks(b)))
-    if max_blocks < FFT_THRESHOLD:
+    if max_blocks < FFT_LIMIT:
         result = middle_mul(a, b)
         if precision != 0:
             result = BigFloat_round(result, precision)
