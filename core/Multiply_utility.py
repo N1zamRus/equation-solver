@@ -31,14 +31,6 @@ def blocks_to_complex(a_blocks: list[int], b_blocks: list[int], n: int) -> list[
     return result
 
 
-def fft_butterfly(a: list[complex], i: int, j: int, w: complex) -> None:
-    u = a[i]
-    v = a[j] * w
-
-    a[i] = u + v
-    a[j] = u - v
-
-
 def reverse_bits(a: list[int]) -> None:
     """
     0 = 00 -> 00 = 0

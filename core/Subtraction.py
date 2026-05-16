@@ -1,4 +1,4 @@
-from core.BigFloat import BigFloat, get_BASE, create_BigFloat
+from core.BigFloat import BigFloat, get_BASE
 from core.BigFloat_utility import remove_top_zeros
 
 

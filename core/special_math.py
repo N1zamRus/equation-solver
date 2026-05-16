@@ -1,6 +1,6 @@
 from core.BigFloat import BigFloat, get_sign, is_zero
 from core.BigFloat_math import Add, Sub, Mul, short_Mul, Div, Sqrt
-from core.Special_values import Nan, Infinity, is_nan, is_infinity, is_special_value
+from core.Special_values import Nan, Infinity, is_nan, is_infinity
 
 
 ZERO = BigFloat(1, [0], 0)
@@ -153,20 +153,6 @@ def special_sqrt(value: NumberValue, precision: int):
         return Nan()
 
     return Sqrt(value, precision)
-
-
-def special_eq(left: NumberValue, right: NumberValue):
-    """self == other"""
-    if is_nan(left) or is_nan(right):
-        return False
-
-    if is_infinity(left) and is_infinity(right):
-        return left.sign == right.sign
-
-    if is_infinity(left) or is_infinity(right):
-        return False
-
-    return left == right
 
 
 def special_lt(left: NumberValue, right: NumberValue):

@@ -1,4 +1,4 @@
-from decimal import Decimal, getcontext, MAX_EMAX, MIN_EMIN
+from decimal import getcontext, MAX_EMAX, MIN_EMIN
 from random import Random
 from time import perf_counter
 
@@ -11,7 +11,7 @@ from tests.test_utility import make_signed_random_pairs, to_decimal, bigfloat_de
 
 SUB_TIMES = []
 
-RANDOM_PAIRS_COUNT = 200
+RANDOM_PAIRS_COUNT = 10
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 52152
 

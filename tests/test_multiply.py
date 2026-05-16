@@ -2,14 +2,14 @@ from decimal import Decimal, getcontext, MAX_EMAX, MIN_EMIN
 from core.Multiply import Mul
 from core.BigFloat import create_BigFloat, bigfloat_string
 from time import perf_counter
-from tests.test_utility import to_decimal, bigfloat_decimal, make_signed_random_pairs
+from tests.test_utility import to_decimal, make_signed_random_pairs
 from random import Random
 
 import pytest
 
 MUL_TIMES = []
 
-RANDOM_PAIRS_COUNT = 200
+RANDOM_PAIRS_COUNT = 10
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 512352
 

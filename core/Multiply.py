@@ -5,8 +5,6 @@ from core.BigFloat import (
     make_carry,
     normalize,
     get_sign,
-    create_BigFloat,
-    bigfloat_string,
     BigFloat_round,
 )
 from core.Multiply_utility import (
@@ -18,14 +16,9 @@ from core.Multiply_utility import (
     round_coeffs,
     reverse_bits,
 )
-from decimal import getcontext, MAX_EMAX, MIN_EMIN
 
-getcontext().prec = 21000
-getcontext().Emax = MAX_EMAX
-getcontext().Emin = MIN_EMIN
-
-N = 0
-
+KARATSUBA_LIMIT = 15
+FFT_THRESHOLD = 150
 
 def FFT(a: list[complex], w_root: list[complex]) -> list[complex]:
     length = 2
@@ -50,8 +43,6 @@ def FFT(a: list[complex], w_root: list[complex]) -> list[complex]:
 
 
 def Mul(a: BigFloat, b: BigFloat, precision=2026) -> BigFloat:
-    global N
-
     result_sign = get_sign(a) * get_sign(b)
     result_exp10 = get_exp10(a) + get_exp10(b)
 
@@ -105,7 +96,7 @@ def multiply_blocks(blocks: list[int], multiplier: int) -> list[int]:
         blocks[i] *= abs(multiplier)
     return blocks
 
-KARATSUBA_LIMIT = 15
+
 
 
 def add_blocks(a: list[int], b: list[int]) -> list[int]:
@@ -171,9 +162,6 @@ def middle_mul(a: BigFloat, b: BigFloat) -> BigFloat:
     result_blocks = make_carry(result_blocks)
 
     return normalize(BigFloat(get_sign(a) * get_sign(b), result_blocks, get_exp10(a) + get_exp10(b)))
-
-
-FFT_THRESHOLD = 150
 
 
 def smart_mul(a: BigFloat, b: BigFloat, precision: int = 2026) -> BigFloat:
