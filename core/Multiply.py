@@ -79,7 +79,6 @@ def Mul(a: BigFloat, b: BigFloat, precision=2026) -> BigFloat:
 
     return res_BF
 
-
 def short_Mul(num: BigFloat, multiplier: int, exp_multiplier: int = 0) -> BigFloat:
     res_sign = get_sign(num) * (1 if multiplier > 0 else -1)
     res_exp = get_exp10(num) + exp_multiplier

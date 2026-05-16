@@ -256,7 +256,7 @@ FFT использует комплексные корни единицы - cos(
 
 Формула Ньютона для нахождения 1/x:
 
-    x_{k+1} = x_k * (2 - b * x_k)
+    x_k+1 = x_k * (2 - b * x_k)
 
 Эта формула удваивает число верных цифр на каждой итерации. Если первое
 приближение даёт ~15 верных цифр, то за 11 итераций получим 15 * 2^11 =
@@ -289,10 +289,10 @@ Div(a, b) - это просто Mul(a, Inv(b)). Деление сводится 
 
 Идея
 
-Тут двойной фокус: для нахождения sqrt(n) сначала ищется 1/sqrt(n), и потом
-домножается на n. Зачем? Формула Ньютона для 1/sqrt(n) не содержит деления:
+Для нахождения sqrt(n) сначала ищется 1/sqrt(n), и потом
+домножается на n. Теперь формула Ньютона для 1/sqrt(n) не содержит деления:
 
-    x_{k+1} = x_k * (3 - n * x_k^2) / 2
+    x_k+1 = x_k * (3 - n * x_k^2) / 2
 
 А для прямого sqrt(n) пришлось бы делить на x_k, а деление - это само по
 себе целая отдельная операция. Так что искать обратный корень дешевле, и
@@ -341,11 +341,11 @@ Sqrt(a) выполняет цикл итераций Ньютона:
     zero               = "0"
 
     digit_part         = [underline], digit
-    integer            = zero | without_zero_digit, {digit_part}
+    integer            = zero | without_zero_digit, digit_part
 
     exponent           = exp, [sign], integer
-    frac_after_integer = dot, [digit, {digit_part}]
-    frac_without_int   = dot, digit, {digit_part}
+    frac_after_integer = dot, [digit, digit_part]
+    frac_without_int   = dot, digit, digit_part
 
     number             = integer, [frac_after_integer], [exponent]
                        | frac_without_int, [exponent]
@@ -564,6 +564,7 @@ test_solver_decimal.py
 
 Типичный результат прогона:
 
+Процессор Intel Core i5-3330:
 Среднее время Add: 0.00527032 сек
 Среднее время Div: 0.21966482 сек
 Среднее время is_number: 0.01807251 сек
