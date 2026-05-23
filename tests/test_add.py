@@ -73,4 +73,5 @@ def print_average_time():
 
     if ADD_TIMES:
         avg_add = sum(ADD_TIMES) / len(ADD_TIMES)
+        print(f"\nМаксимальное время: {max(ADD_TIMES)}")
         print(f"\nСреднее время Add: {avg_add:.8f} сек")

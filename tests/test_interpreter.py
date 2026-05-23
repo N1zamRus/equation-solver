@@ -85,4 +85,5 @@ def print_average_time():
 
     if INTERPRETER_TIMES:
         avg = sum(INTERPRETER_TIMES) / len(INTERPRETER_TIMES)
+        print(f"\nМаксимальное время: {max(INTERPRETER_TIMES)}")
         print(f"\nСреднее время is_number: {avg:.8f} сек")

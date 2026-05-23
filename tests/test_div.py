@@ -91,4 +91,5 @@ def print_average_time():
 
     if DIV_TIMES:
         avg_div = sum(DIV_TIMES) / len(DIV_TIMES)
+        print(f"\nМаксимальное время: {max(DIV_TIMES)}")
         print(f"\nСреднее время Div: {avg_div:.8f} сек")

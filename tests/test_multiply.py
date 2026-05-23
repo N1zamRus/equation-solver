@@ -90,6 +90,7 @@ def print_average_time():
 
     if MUL_TIMES:
         avg_mul = sum(MUL_TIMES) / len(MUL_TIMES)
+        print(f"\nМаксимальное время: {max(MUL_TIMES)}")
         print(f"\nСреднее время Mul: {avg_mul:.8f} сек")
 
 # pytest -s test_multiply.py 2>&1 | tee results_mul.txt

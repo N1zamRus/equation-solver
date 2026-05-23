@@ -17,6 +17,7 @@ from solver.special_solver import special_solution_calc
 from core.Special_values import is_special_value
 from core.BigFloat import BigFloat, is_zero, get_sign, bigfloat_string
 from core.BigFloat_math import Add, Sub, Mul, short_Mul, Div, Sqrt
+from tests.test_utility import to_decimal
 
 
 ZERO = BigFloat(1, [0], 0)
@@ -151,7 +152,7 @@ def output_solution(solution: Solution):
         print(f"x = {value_str(get_x1(solution))}")
         return
     if solution.x1 is not None:
-        print(f"x1 = {value_str(get_x1(solution))}", end=" ")
+        print(f"x1 = {value_str(get_x1(solution))}")
     if solution.x2 is not None:
         print(f"x2 = {value_str(get_x2(solution))}")
 
@@ -165,11 +166,11 @@ def value_str(value: ComplexBigFloat | BigFloat):
     return str(value)
 
 def complex_string(value: ComplexBigFloat):
-    real = value_str(get_real(value))
+    real = f"{to_decimal(get_real(value)):.10010f}"[:10000]
 
     imag_value = get_imag(value)
     imag_abs = abs(imag_value)
-    imag = value_str(imag_abs)
+    imag = f"{to_decimal(imag_abs):.10010f}"[:10000]
 
     if isinstance(imag_value, BigFloat):
         sign = get_sign(imag_value)

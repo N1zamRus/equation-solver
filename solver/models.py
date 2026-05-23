@@ -107,10 +107,11 @@ def get_imag(value: ComplexDecimal | ComplexBigFloat):
 
 
 def complex_decimal_string(value: ComplexDecimal):
-    real = str(get_real(value))
-    imag = str(abs(get_imag(value)))
+    real = f"{get_real(value):.10010f}"[:10000]
+    imag_val = get_imag(value)
+    imag = f"{abs(imag_val):.10010f}"[:10000]
 
-    if get_imag(value) < Decimal("0"):
+    if imag_val < Decimal("0"):
         return f"{real} - {imag}i"
 
     return f"{real} + {imag}i"

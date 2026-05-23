@@ -1,7 +1,7 @@
 from input.interpreter import ThreeBigFloats
 from solver.models import Coefs
 from solver.solver import solution_calc, output_solution
-from solver.decimal_solver import solution_calc as decimal_solution_calc
+from solver.decimal_solver import solution_calc as decimal_solution_calc, output_solution as decimal_output_solution
 from tests.test_utility import to_decimal
 
 
@@ -20,13 +20,18 @@ def main():
 
     coefs = Coefs(a, b, c)
     solution = solution_calc(coefs)
-    output_solution(solution)
 
     expected = decimal_solution_calc(Coefs(
         to_decimal(a), to_decimal(b), to_decimal(c),
     ))
-    print("решение верно" if solution == expected else "решение неверно")
 
+    output_solution(solution)
+
+    print(f"\n\n{'=' * 162}\n\n")
+
+    decimal_output_solution(expected)
+
+    print("решение верно" if solution == expected else "решение неверно")
 
 if __name__ == "__main__":
     main()

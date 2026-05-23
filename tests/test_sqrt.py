@@ -127,4 +127,5 @@ def print_average_time():
 
     if SQRT_TIMES:
         avg_sqrt = sum(SQRT_TIMES) / len(SQRT_TIMES)
+        print(f"\nМаксимальное время: {max(SQRT_TIMES)}")
         print(f"\nСреднее время Sqrt: {avg_sqrt:.8f} сек")

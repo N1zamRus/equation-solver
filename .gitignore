@@ -2,7 +2,6 @@
 *.pyc
 .pytest_cache/
 .vscode/
-.claude/
 all_tests.txt/
 all_tests.txt
 1.PY

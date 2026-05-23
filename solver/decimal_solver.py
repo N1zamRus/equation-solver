@@ -163,6 +163,6 @@ def output_solution(solution: Solution) -> None:
         return
 
     if solution.x1 is not None:
-        print(f"x1 = {value_str(get_x1(solution))}", end=" ")
+        print(f"x1 = {value_str(get_x1(solution))}")
     if solution.x2 is not None:
         print(f"x2 = {value_str(get_x2(solution))}")

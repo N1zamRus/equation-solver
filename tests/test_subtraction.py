@@ -73,4 +73,5 @@ def print_average_time():
 
     if SUB_TIMES:
         avg_sub = sum(SUB_TIMES) / len(SUB_TIMES)
+        print(f"\nМаксимальное время: {max(SUB_TIMES)}")
         print(f"\nСреднее время Sub: {avg_sub:.8f} сек")
