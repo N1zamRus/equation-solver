@@ -27,7 +27,8 @@ def print_average_time():
 
     if SPECIAL_TIMES:
         avg = sum(SPECIAL_TIMES) / len(SPECIAL_TIMES)
-        print(f"\nСреднее время Special: {avg:.8f} сек")
+        print(f"\nМаксимальное время Special: {avg:.8f} сек")
+        print(f"\nСреднее время Special: {avg:.8f} сек\n")
 
 
 

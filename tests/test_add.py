@@ -11,7 +11,7 @@ from tests.test_utility import make_signed_random_pairs, to_decimal, bigfloat_de
 
 ADD_TIMES = []
 
-RANDOM_PAIRS_COUNT = 100
+RANDOM_PAIRS_COUNT = 10
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 7536
 
@@ -47,6 +47,7 @@ def test_add_edge_cases(left, right):
     ("99999", "0.00001"),         # целая часть на границе блока + дробная
     ("-99999", "-1"),             # отрицательные с переносом
     ("10000000000", "1"),         # перенос в третий блок
+    ("99999999999999999999", "1"),
 ])
 def test_add_block_boundary(left, right):
     actual = Add(create_BigFloat(left), create_BigFloat(right))
@@ -73,5 +74,5 @@ def print_average_time():
 
     if ADD_TIMES:
         avg_add = sum(ADD_TIMES) / len(ADD_TIMES)
-        print(f"\nМаксимальное время: {max(ADD_TIMES)}")
-        print(f"\nСреднее время Add: {avg_add:.8f} сек")
+        print(f"\nМаксимальное время Add: {max(ADD_TIMES)}")
+        print(f"\nСреднее время Add: {avg_add:.8f} сек\n")

@@ -16,7 +16,7 @@ from tests.test_utility import (
 
 SOLVER_TIMES = []
 
-RANDOM_COEFS_COUNT = 3
+RANDOM_COEFS_COUNT = 1000
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 74567
 
@@ -150,5 +150,5 @@ def print_average_time():
 
     if SOLVER_TIMES:
         avg_solver = sum(SOLVER_TIMES) / len(SOLVER_TIMES)
-        print(f"\nМаксимальное время: {max(SOLVER_TIMES)}")
-        print(f"\nСреднее время Solver: {avg_solver:.8f} сек")
+        print(f"\nМаксимальное время Solver: {max(SOLVER_TIMES)}")
+        print(f"\nСреднее время Solver: {avg_solver:.8f} сек\n")

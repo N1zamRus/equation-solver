@@ -11,7 +11,7 @@ from tests.test_utility import make_str_number
 
 SQRT_TIMES = []
 
-RANDOM_VALUES_COUNT = 100
+RANDOM_VALUES_COUNT = 1000
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 835683
 
@@ -127,5 +127,5 @@ def print_average_time():
 
     if SQRT_TIMES:
         avg_sqrt = sum(SQRT_TIMES) / len(SQRT_TIMES)
-        print(f"\nМаксимальное время: {max(SQRT_TIMES)}")
-        print(f"\nСреднее время Sqrt: {avg_sqrt:.8f} сек")
+        print(f"\nМаксимальное время Sqrt: {max(SQRT_TIMES)}")
+        print(f"\nСреднее время Sqrt: {avg_sqrt:.8f} сек\n")

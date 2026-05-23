@@ -11,7 +11,7 @@ from tests.test_utility import make_signed_random_pairs, to_decimal, bigfloat_de
 
 SUB_TIMES = []
 
-RANDOM_PAIRS_COUNT = 100
+RANDOM_PAIRS_COUNT = 1000
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 34568
 
@@ -73,5 +73,5 @@ def print_average_time():
 
     if SUB_TIMES:
         avg_sub = sum(SUB_TIMES) / len(SUB_TIMES)
-        print(f"\nМаксимальное время: {max(SUB_TIMES)}")
-        print(f"\nСреднее время Sub: {avg_sub:.8f} сек")
+        print(f"\nМаксимальное время Sub: {max(SUB_TIMES)}")
+        print(f"\nСреднее время Sub: {avg_sub:.8f} сек\n")

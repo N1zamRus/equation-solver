@@ -10,7 +10,7 @@ import pytest
 
 DIV_TIMES = []
 
-RANDOM_PAIRS_COUNT = 100
+RANDOM_PAIRS_COUNT = 1000
 RANDOM_NUMBER_LENGTH = 10000
 RANDOM_SEED = 413432
 
@@ -91,5 +91,5 @@ def print_average_time():
 
     if DIV_TIMES:
         avg_div = sum(DIV_TIMES) / len(DIV_TIMES)
-        print(f"\nМаксимальное время: {max(DIV_TIMES)}")
-        print(f"\nСреднее время Div: {avg_div:.8f} сек")
+        print(f"\nМаксимальное время Div: {max(DIV_TIMES)}")
+        print(f"\nСреднее время Div: {avg_div:.8f} сек\n")

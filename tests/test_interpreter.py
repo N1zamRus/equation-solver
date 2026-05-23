@@ -6,7 +6,7 @@ from input.interpreter import is_number
 from tests.test_utility import make_random_numbers
 
 
-RANDOM_TESTS_COUNT = 100
+RANDOM_TESTS_COUNT = 1000
 RANDOM_SEED = 412341
 NUMBER_LENGTH = 10000
 
@@ -62,6 +62,12 @@ def test_valid(value):
     "1 2",
     "1.2.3",
     "-1-2-3",
+    ". 1 1",
+    "- 1 1",
+    "1..2 0 0",
+    "--1 0 0",
+    "1-2 0 0",
+    "1 . 1"
 ])
 def test_invalid(value):
     assert is_number(value) is False
@@ -85,5 +91,5 @@ def print_average_time():
 
     if INTERPRETER_TIMES:
         avg = sum(INTERPRETER_TIMES) / len(INTERPRETER_TIMES)
-        print(f"\nМаксимальное время: {max(INTERPRETER_TIMES)}")
-        print(f"\nСреднее время is_number: {avg:.8f} сек")
+        print(f"\nМаксимальное время is_number: {max(INTERPRETER_TIMES)}")
+        print(f"\nСреднее время is_number: {avg:.8f} сек\n")

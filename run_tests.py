@@ -2,13 +2,13 @@ import subprocess
 import sys
 
 
-TIMING_PREFIX = "Среднее время"
+TIMING_PREFIXES = ("Среднее время", "Максимальное время")
 
 OUTPUT_FILE = "all_tests.txt"
 
 
 def is_timing_line(line: str) -> bool:
-    return TIMING_PREFIX in line
+    return any(prefix in line for prefix in TIMING_PREFIXES)
 
 
 def run_pytest() -> subprocess.Popen:
@@ -40,7 +40,7 @@ def collect_output(process: subprocess.Popen) -> tuple[list[str], list[str], lis
 
 
 def print_timing_section(timing_lines: list[str]) -> None:
-    separator = "\n" + "=" * 40 + " Среднее время " + "=" * 40 + "\n"
+    separator = "\n" + "=" * 40 + " Время " + "=" * 40 + "\n"
     print(separator)
     for line in timing_lines:
         print(line, end="")
@@ -48,7 +48,7 @@ def print_timing_section(timing_lines: list[str]) -> None:
 
 def save_to_file(regular_lines: list[str], timing_lines: list[str], error_lines: list[str]) -> None:
     error_separator = "\n" + "=" * 40 + " Ошибки " + "=" * 40 + "\n"
-    timing_separator = "\n" + "=" * 40 + " Среднее время " + "=" * 40 + "\n"
+    timing_separator = "\n" + "=" * 40 + " Время " + "=" * 40 + "\n"
     all_lines = regular_lines + [timing_separator] + timing_lines + [error_separator] + error_lines
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as file:
@@ -71,4 +71,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-    
+    # .\.venv\Scripts\Activate.ps1
