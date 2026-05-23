@@ -161,7 +161,7 @@ def value_str(value: ComplexBigFloat | BigFloat):
     if isinstance(value, ComplexBigFloat):
         return complex_string(value)
     elif isinstance(value, BigFloat):
-        return bigfloat_string(value)
+        return f"{to_decimal(value):.10010f}"[:10000]
 
     return str(value)
 

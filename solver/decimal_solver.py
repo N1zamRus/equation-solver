@@ -152,7 +152,7 @@ def solution_calc(coefs: Coefs) -> Solution:
 def value_str(value) -> str:
     if isinstance(value, ComplexDecimal):
         return complex_decimal_string(value)
-    return str(value)
+    return f"{value:.10010f}"[:10000]
 
 
 def output_solution(solution: Solution) -> None:
