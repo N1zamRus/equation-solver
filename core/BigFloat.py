@@ -22,6 +22,12 @@ from core.Special_values import Nan, Infinity
 
 
 class BigFloat:
+    """Число с произвольной точностью.
+
+    Значение хранится как мантисса в блоках и десятичный порядок.
+    Блоки идут от младшего разряда к старшему.
+    """
+
     BASE_DIGITS = BASE_DIGITS
     BASE = BASE
 
@@ -110,6 +116,7 @@ def create_BigFloat(num: str) -> BigFloat:
 
 
 def normalize(num: BigFloat) -> BigFloat:
+    """Убирает лишние нули и приводит число к каноническому виду."""
     sign = num.sign
     exp10 = num.exp10
     blocks = num.blocks.copy()
@@ -135,6 +142,7 @@ def normalize(num: BigFloat) -> BigFloat:
 
 
 def align(a: BigFloat, b: BigFloat) -> tuple[BigFloat, BigFloat]:
+    """Выравнивает десятичные порядки двух чисел для сравнения."""
     min_exp = min(a.exp10, b.exp10)
 
     if a.exp10 > min_exp:
@@ -147,6 +155,7 @@ def align(a: BigFloat, b: BigFloat) -> tuple[BigFloat, BigFloat]:
 
 
 def compare(self: BigFloat, other: BigFloat) -> int:
+    """Сравнивает два числа: -1, 0 или 1."""
     a = normalize(self)
     b = normalize(other)
 
