@@ -3,11 +3,13 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from core.BigFloat import BigFloat
 
+# В одном блоке хранится пять десятичных цифр.
 BASE_DIGITS = 5
 BASE = 10 ** BASE_DIGITS
 
 
 def get_mantiss(cls: "BigFloat") -> str:
+    """Преобразует блоки мантиссы в строку."""
     if not cls.blocks:
         return "0"
 
@@ -37,6 +39,7 @@ def bigfloat_string(num: "BigFloat") -> str:
 
 
 def slice_blocks(mantissa: str, base_digits: int = BASE_DIGITS) -> list[int]:
+    """Разбивает строку мантиссы на блоки от старшего к младшему."""
     blocks = []
 
     for i in range(len(mantissa), 0, -base_digits):
@@ -48,6 +51,7 @@ def slice_blocks(mantissa: str, base_digits: int = BASE_DIGITS) -> list[int]:
 
 
 def make_carry(coeffs: list[int], base: int = BASE) -> list[int]:
+    """Складывает коэффициенты разрядов и переносит десятки в старший блок."""
     carry = 0
     blocks = []
 

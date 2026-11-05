@@ -24,16 +24,20 @@ ZERO = BigFloat(1, [0], 0)
 TWO = BigFloat(1, [2], 0)
 FOUR = BigFloat(1, [4], 0)
 
+# Достаточная точность для обычных уравнений и защита от лишних цифр.
 WORK_PRECISION = 2500
 
 
 def square_b(b: BigFloat) -> BigFloat:
+    """Возводит коэффициент b в квадрат."""
     return Mul(b, b, WORK_PRECISION)
 
 def calc_4ac(a: BigFloat, c: BigFloat) -> BigFloat:
+    """Вычисляет 4*a*c для дискриминанта."""
     return Mul(Mul(FOUR, a, WORK_PRECISION), c, WORK_PRECISION)
 
 def calc_discriminant(coefs: Coefs):
+    """Возвращает дискриминант квадратного уравнения."""
     a = get_a(coefs)
     b = get_b(coefs)
     c = get_c(coefs)
@@ -49,6 +53,7 @@ def is_linear(coefs: Coefs) -> bool:
 
 
 def linear_solve(coefs: Coefs) -> Solution:
+    """Решает уравнение a*x + b = 0, когда a равно нулю."""
     b = get_b(coefs)
     c = get_c(coefs)
 
@@ -62,14 +67,17 @@ def linear_solve(coefs: Coefs) -> Solution:
 
 
 def calc_denominator(a: BigFloat) -> BigFloat:
+    """Вычисляет знаменатель комплексных корней: 2*a."""
     return Mul(TWO, a, WORK_PRECISION)
 
 
 def calc_real(b: BigFloat, denominator: BigFloat) -> BigFloat:
+    """Вычисляет действительную часть комплексного корня."""
     return Div(-b, denominator, WORK_PRECISION)
 
 
 def calc_imag(discriminant: BigFloat, denominator: BigFloat) -> BigFloat:
+    """Вычисляет мнимую часть комплексного корня."""
     return Div(Sqrt(-discriminant, WORK_PRECISION), denominator, WORK_PRECISION)
 
 
@@ -92,12 +100,14 @@ def calc_complex(coefs: Coefs, discriminant: BigFloat) -> Solution:
 
 
 def calc_q(b: BigFloat, sqrt_d: BigFloat) -> BigFloat:
+    """Выбирает устойчивую формулу для q из метода Виета."""
     if b >= ZERO:
         return short_Mul(Add(b, sqrt_d), -5, -1)
     return short_Mul(Sub(b, sqrt_d), -5, -1)
 
 
 def roots_calc(coefs: Coefs, discriminant: BigFloat):
+    """Вычисляет два действительных корня по формуле Виета."""
     a = get_a(coefs)
     b = get_b(coefs)
     c = get_c(coefs)
@@ -111,12 +121,14 @@ def roots_calc(coefs: Coefs, discriminant: BigFloat):
     return x1, x2
 
 def quadratic_solve(coefs: Coefs) -> Solution:
+    """Решает квадратное уравнение по типу дискриминанта."""
     discriminant = calc_discriminant(coefs)
 
     if get_sign(discriminant) < 0:
         return calc_complex(coefs, discriminant)
 
     if is_zero(discriminant):
+        # При D = 0 оба корня совпадают и равны -b / (2*a).
         denominator = short_Mul(get_a(coefs), 2, 0)
         root = Div(-get_b(coefs), denominator, WORK_PRECISION)
         return Solution(solv_type=SolutionState.SAME_ROOTS, x1=root)
@@ -129,6 +141,7 @@ def quadratic_solve(coefs: Coefs) -> Solution:
     )
 
 def has_special_value(coefs: Coefs) -> bool:
+    """Проверяет наличие NaN или бесконечности среди коэффициентов."""
     return (
         is_special_value(get_a(coefs))
         or is_special_value(get_b(coefs))
@@ -137,6 +150,7 @@ def has_special_value(coefs: Coefs) -> bool:
 
 
 def solution_calc(coefs: Coefs) -> Solution:
+    """Выбирает подходящий решатель для переданных коэффициентов."""
     if has_special_value(coefs):
         return special_solution_calc(coefs)
     if is_linear(coefs):
@@ -146,6 +160,7 @@ def solution_calc(coefs: Coefs) -> Solution:
 
 
 def output_solution(solution: Solution):
+    """Печатает тип решения и найденные корни."""
     print(get_solve_type(solution), end=": ")
 
     if solution.solv_type == SolutionState.SAME_ROOTS:
